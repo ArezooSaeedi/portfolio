@@ -170,7 +170,7 @@ function Navbar() {
           aria-current={location.pathname === "/" && !location.hash ? "page" : undefined}
           className="rounded-full px-3 text-sm font-semibold tracking-tight text-[#191A19] outline-none transition focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F6F2EE]"
         >
-          Arezoo
+          Arezoo's Portfolio
         </Link>
 
         <div className="flex items-center gap-1 text-sm text-[#656963]">
