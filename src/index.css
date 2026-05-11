@@ -80,3 +80,9 @@ img {
 .animate-fade-in {
   animation: fadeIn 2s ease;
 }
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid #6f4bd8;
+  outline-offset: 4px;
+}
