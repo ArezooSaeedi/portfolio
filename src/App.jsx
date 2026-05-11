@@ -297,7 +297,7 @@ function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: shouldReduceMotion ? 0.01 : 0.5, delay: shouldReduceMotion ? 0 : 0.28 }}
               >
-                <Button href="#projects" variant="primary">
+                <Button href="#projects" variant="secondary">
                   View my work{" "}
                   <ArrowRight size={17} aria-hidden="true" className="transition group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
                 </Button>
@@ -337,61 +337,14 @@ function Home() {
                   className="aspect-[4/5] w-full rounded-[2rem] object-cover"
                 />
               </motion.div>
-
-              {["UX Research", "Product Design", "UX Writing", "Accessibility"].map((tag, index) => (
-                <motion.span
-                  key={tag}
-                  className={`absolute hidden rounded-full border border-[#191A19]/10 bg-[#F6F2EE]/90 px-4 py-2 text-sm font-semibold text-[#191A19] shadow-lg backdrop-blur md:inline-flex ${
-                    index === 0
-                      ? "-left-8 top-12"
-                      : index === 1
-                        ? "-right-10 top-24"
-                        : index === 2
-                          ? "-left-4 bottom-20"
-                          : "right-4 bottom-8"
-                  }`}
-                  initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.96 }}
-                  animate={
-                    shouldReduceMotion
-                      ? { opacity: 1, scale: 1 }
-                      : {
-                          opacity: 1,
-                          scale: 1,
-                          y: [0, -3, 0],
-                          x: [0, index % 2 === 0 ? 2 : -2, 0],
-                        }
-                  }
-                  transition={
-                    shouldReduceMotion
-                      ? { duration: 0.01 }
-                      : {
-                          opacity: { duration: 0.35, delay: 0.45 + index * 0.08 },
-                          scale: { duration: 0.35, delay: 0.45 + index * 0.08 },
-                          y: {
-                            duration: 7 + index * 0.8,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                          },
-                          x: {
-                            duration: 8 + index * 0.8,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                          },
-                        }
-                  }
-                  whileHover={shouldReduceMotion ? undefined : { y: -3, scale: 1.03 }}
-                >
-                  {tag}
-                </motion.span>
-              ))}
             </motion.div>
           </div>
         </section>
 
         <Reveal className="mx-auto grid max-w-6xl gap-3 px-6 pb-16 md:grid-cols-4 md:px-10">
           {[
-            ["HCI", "M.Sc. in progress"],
-            ["Psychology", "Bachelor’s background"],
+            ["HCI", "MSc in progress"],
+            ["Psychology", "BSc background"],
             ["4+", "years in UX"],
             ["A11y", "Accessibility-minded design"],
           ].map(([value, label]) => (
@@ -505,7 +458,7 @@ function Home() {
               </p>
 
               <div className="mt-9 flex flex-wrap gap-4">
-                <Button href="mailto:arezoosaeidish@gmail.com" variant="contactLight">
+                <Button href="mailto:arezoosaeidish@gmail.com" variant="contactOutline">
                   Email me{" "}
                   <ArrowRight size={17} aria-hidden="true" className="transition group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
                 </Button>
