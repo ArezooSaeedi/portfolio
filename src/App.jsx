@@ -365,7 +365,7 @@ function Home() {
               </p>
             </Reveal>
 
-            <div className="grid gap-7 lg:grid-cols-2">
+            <div className="grid gap-7 ">
               {projects.map((project, i) => (
                 <ProjectCard key={project.title} {...project} index={i} />
               ))}
@@ -563,9 +563,9 @@ function ProjectCard({ title, type, description, link, image, accent, mockup, in
     >
       <Link
         to={link}
-        className="group grid h-full overflow-hidden rounded-[2rem] border border-[#191A19]/10 bg-[#EEE6DD] p-4 shadow-[0_20px_70px_rgba(25,26,25,0.08)] outline-none transition focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F6F2EE] md:grid-cols-[0.95fr_1.05fr]"
+        className="group grid h-full w-full overflow-hidden rounded-[2rem] border border-[#191A19]/10 bg-[#EEE6DD] p-4 shadow-[0_20px_70px_rgba(25,26,25,0.08)] outline-none transition focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F6F2EE] md:grid-cols-[0.85fr_1.15fr]"
       >
-        <div className={`relative min-h-72 overflow-hidden rounded-[1.6rem] bg-gradient-to-br ${accent} p-5`}>
+        <div className={`relative min-h-64 overflow-hidden rounded-[1.6rem] bg-gradient-to-br ${accent} p-5`}>
           <div aria-hidden="true" className="absolute -right-12 -top-10 h-44 w-44 rounded-full bg-white/50 blur-2xl transition group-hover:scale-125 motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
           <ProjectMockup image={image} title={title} type={mockup} />
         </div>
@@ -580,7 +580,7 @@ function ProjectCard({ title, type, description, link, image, accent, mockup, in
               {title}
             </h3>
 
-            <p className="mt-4 text-base leading-7 !text-[#191A19]">
+            <p className="mt-4 max-w-2xl text-lg leading-8 text-[#656963]">
               {description}
             </p>
           </div>
