@@ -307,15 +307,7 @@ function Home() {
                 </Button>
               </motion.div>
 
-              <motion.div
-                className="mt-8 inline-flex items-center gap-3 rounded-full border border-[#191A19]/10 bg-[#F6F2EE]/85 px-4 py-2 text-sm text-[#656963] shadow-sm backdrop-blur"
-                initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: shouldReduceMotion ? 0.01 : 0.5, delay: shouldReduceMotion ? 0 : 0.4 }}
-              >
-                <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-[#4DAA57] shadow-[0_0_0_6px_rgba(77,170,87,0.14)]" />
-                Open to UX Design roles
-              </motion.div>
+            
             </div>
 
             <motion.div
@@ -340,17 +332,18 @@ function Home() {
             </motion.div>
           </div>
         </section>
-
-        <Reveal className="mx-auto grid max-w-6xl gap-3 px-6 pb-16 md:grid-cols-4 md:px-10">
-          {[
-            ["HCI", "MSc in progress"],
-            ["Psychology", "BSc background"],
-            ["4+", "years in UX"],
-            ["A11y", "Accessibility-minded design"],
-          ].map(([value, label]) => (
-            <StatCard key={label} value={value} label={label} />
-          ))}
+        <Reveal className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-4 px-6 pb-16 md:grid-cols-4 md:px-10">
+         {[
+           ["HCI", "MSc in progress"],
+           ["Psychology", "BSc background"],
+           ["4+", "years in UX"],
+           ["A11y", "Accessibility-minded design"],
+         ].map(([value, label]) => (
+         <StatCard key={label} value={value} label={label} />
+         ))}
         </Reveal>
+
+      
 
         <section
           id="projects"
@@ -546,7 +539,7 @@ function StatCard({ value, label }) {
 
   return (
     <motion.div
-      className="rounded-[2rem] border border-[#191A19]/10 bg-[#F6F2EE]/90 p-5 shadow-sm backdrop-blur"
+      className="w-full rounded-[2rem] border border-[#191A19]/10 bg-[#F6F2EE]/90 p-5 shadow-sm backdrop-blur"
       whileHover={shouldReduceMotion ? undefined : { y: -5 }}
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
     >
