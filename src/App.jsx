@@ -1,7 +1,7 @@
 import { Routes, Route, Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion, useScroll } from "framer-motion";
 import { useEffect, useId, useRef, useState } from "react";
-import { ArrowRight, Layers3, Mail, PenLine, Search } from "lucide-react";
+import { ArrowRight, Layers3, Mail, Menu, PenLine, Search, X } from "lucide-react";
 import { createPortal } from "react-dom";
 
 function SkipLink() {
@@ -135,6 +135,7 @@ function ScrollProgress() {
 function Navbar() {
   const location = useLocation();
   const shouldReduceMotion = useReducedMotion();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const links = [
     { label: "Projects", to: "/#projects" },
@@ -162,22 +163,25 @@ function Navbar() {
   return (
     <nav
       aria-label="Main navigation"
-      className="fixed left-1/2 top-4 z-50 w-[calc(100%-2rem)] max-w-5xl -translate-x-1/2 rounded-full border border-[#191A19]/10 bg-[#F6F2EE]/85 px-3 py-3 shadow-[0_18px_60px_rgba(25,26,25,0.12)] backdrop-blur-xl"
+      className="fixed left-1/2 top-4 z-50 w-[calc(100%-1rem)] max-w-6xl -translate-x-1/2 rounded-[2rem] border border-[#191A19]/10 bg-[#F6F2EE]/90 px-3 py-3 shadow-[0_18px_60px_rgba(25,26,25,0.12)] backdrop-blur-xl sm:w-[calc(100%-2rem)] sm:px-5 md:rounded-full"
     >
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex min-w-0 items-center justify-between gap-2 sm:gap-3">
         <Link
           to="/"
           aria-current={location.pathname === "/" && !location.hash ? "page" : undefined}
-          className="rounded-full px-3 text-sm font-semibold tracking-tight text-[#191A19] outline-none transition focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F6F2EE]"
+          onClick={() => setIsMenuOpen(false)}
+          className="min-w-0 shrink rounded-full px-2 text-base font-semibold leading-tight tracking-tight text-[#191A19] outline-none transition focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F6F2EE] sm:px-3 sm:text-lg"
         >
-          Arezoo's Portfolio
+          <span className="block sm:inline">Arezoo's</span>{" "}
+          <span className="block sm:inline">Portfolio</span>
         </Link>
 
-        <div className="flex items-center gap-1 text-sm text-[#656963]">
+        <div className="hidden items-center gap-1 text-sm text-[#656963] md:flex">
           {links.map((link) => (
             <Link
               key={link.to}
               to={link.to}
+              onClick={() => setIsMenuOpen(false)}
               className="group relative rounded-full px-3 py-2 outline-none transition hover:text-[#191A19] focus-visible:text-[#191A19] focus-visible:ring-2 focus-visible:ring-[#6353AC] md:px-4"
             >
               <span className="relative z-10">{link.label}</span>
@@ -189,21 +193,51 @@ function Navbar() {
           ))}
         </div>
 
-        <a
-          href="#contact"
-          onClick={handleContactClick}
-          className="group inline-flex min-h-10 items-center gap-2 rounded-full bg-[#6353AC] px-4 py-2 text-sm font-semibold text-white shadow-sm outline-none transition hover:-translate-y-0.5 hover:bg-[#3C3267] focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F6F2EE] motion-reduce:hover:translate-y-0"
-        >
-          <Mail
-            size={15}
-            aria-hidden="true"
-            className="shrink-0 text-white transition duration-300 group-hover:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover:rotate-0"
-          />
-          <span className="inline-block text-white transition duration-300 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">
-            Contact
-          </span>
-        </a>
+        <div className="flex shrink-0 items-center gap-2">
+          <a
+            href="#contact"
+            onClick={(event) => {
+              setIsMenuOpen(false);
+              handleContactClick(event);
+            }}
+            className="group inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-[#6353AC] px-3 py-2 text-sm font-semibold text-white shadow-sm outline-none transition hover:-translate-y-0.5 hover:bg-[#3C3267] focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F6F2EE] motion-reduce:hover:translate-y-0 sm:px-4"
+          >
+            <Mail
+              size={15}
+              aria-hidden="true"
+              className="shrink-0 text-white transition duration-300 group-hover:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover:rotate-0"
+            />
+            <span className="inline-block text-white transition duration-300 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">
+              Contact
+            </span>
+          </a>
+
+          <button
+            type="button"
+            aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={isMenuOpen}
+            onClick={() => setIsMenuOpen((open) => !open)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#191A19]/10 bg-[#F6F2EE]/80 text-[#191A19] shadow-sm outline-none transition hover:border-[#6353AC]/40 hover:text-[#6353AC] focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F6F2EE] md:hidden"
+          >
+            {isMenuOpen ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}
+          </button>
+        </div>
       </div>
+
+      {isMenuOpen && (
+        <div className="mt-3 grid grid-cols-3 gap-2 border-t border-[#191A19]/10 pt-3 text-center text-sm font-medium text-[#656963] md:hidden">
+          {links.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              onClick={() => setIsMenuOpen(false)}
+              className="rounded-full px-2 py-2 outline-none transition hover:bg-[#EFEEF7] hover:text-[#191A19] focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F6F2EE]"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+      )}
     </nav>
   );
 }
@@ -252,10 +286,10 @@ function Home() {
     >
       <Navbar />
 
-      <div className="relative">
-        <div aria-hidden="true" className="pointer-events-none absolute left-[-10%] top-10 h-80 w-80 rounded-full bg-[#EFEEF7]/90 blur-3xl" />
-        <div aria-hidden="true" className="pointer-events-none absolute right-[-8%] top-28 h-96 w-96 rounded-full bg-[#F3D4A5]/45 blur-3xl" />
-        <div aria-hidden="true" className="pointer-events-none absolute left-[40%] top-[34rem] h-72 w-72 rounded-full bg-[#DFCAB9]/40 blur-3xl" />
+      <div className="relative overflow-hidden">
+        <div aria-hidden="true" className="pointer-events-none absolute left-0 top-10 hidden h-80 w-80 -translate-x-1/3 rounded-full bg-[#EFEEF7]/90 blur-3xl sm:block" />
+        <div aria-hidden="true" className="pointer-events-none absolute right-0 top-28 hidden h-96 w-96 translate-x-1/4 rounded-full bg-[#F3D4A5]/45 blur-3xl sm:block" />
+        <div aria-hidden="true" className="pointer-events-none absolute left-[40%] top-[34rem] hidden h-72 w-72 rounded-full bg-[#DFCAB9]/40 blur-3xl md:block" />
 
         <section className="mx-auto max-w-6xl px-6 pb-14 pt-36 md:px-10 md:pb-20 md:pt-44">
           <div className="relative grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
