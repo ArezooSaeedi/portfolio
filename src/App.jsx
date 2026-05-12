@@ -162,19 +162,18 @@ function Navbar() {
   return (
     <nav
       aria-label="Main navigation"
-      className="fixed left-1/2 top-4 z-50 w-[calc(100%-1rem)] max-w-6xl -translate-x-1/2 rounded-full border border-[#191A19]/10 bg-[#F6F2EE]/85 px-2.5 py-2.5 shadow-[0_18px_60px_rgba(25,26,25,0.12)] backdrop-blur-xl sm:w-[calc(100%-2rem)] sm:px-5 sm:py-3"
+      className="fixed left-1/2 top-4 z-50 w-[calc(100%-2rem)] max-w-5xl -translate-x-1/2 rounded-full border border-[#191A19]/10 bg-[#F6F2EE]/85 px-3 py-3 shadow-[0_18px_60px_rgba(25,26,25,0.12)] backdrop-blur-xl"
     >
-      <div className="flex min-w-0 items-center justify-between gap-2 sm:gap-3">
+      <div className="flex items-center justify-between gap-3">
         <Link
           to="/"
           aria-current={location.pathname === "/" && !location.hash ? "page" : undefined}
-          className="shrink-0 rounded-full px-2 text-sm font-semibold tracking-tight text-[#191A19] outline-none transition focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F6F2EE] sm:px-3"
+          className="rounded-full px-3 text-sm font-semibold tracking-tight text-[#191A19] outline-none transition focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F6F2EE]"
         >
-          <span className="sm:hidden">Arezoo</span>
-          <span className="hidden sm:inline">Arezoo's Portfolio</span>
+          Arezoo's Portfolio
         </Link>
 
-        <div className="hidden items-center gap-1 text-sm text-[#656963] md:flex">
+        <div className="flex items-center gap-1 text-sm text-[#656963]">
           {links.map((link) => (
             <Link
               key={link.to}
@@ -193,7 +192,7 @@ function Navbar() {
         <a
           href="#contact"
           onClick={handleContactClick}
-          className="group inline-flex min-h-10 shrink-0 items-center gap-2 rounded-full bg-[#6353AC] px-3 py-2 text-sm font-semibold text-white shadow-sm outline-none transition hover:-translate-y-0.5 hover:bg-[#3C3267] focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F6F2EE] motion-reduce:hover:translate-y-0 sm:px-4"
+          className="group inline-flex min-h-10 items-center gap-2 rounded-full bg-[#6353AC] px-4 py-2 text-sm font-semibold text-white shadow-sm outline-none transition hover:-translate-y-0.5 hover:bg-[#3C3267] focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F6F2EE] motion-reduce:hover:translate-y-0"
         >
           <Mail
             size={15}
@@ -249,18 +248,18 @@ function Home() {
     <main
       id="main-content"
       tabIndex={-1}
-      className="min-h-screen w-full max-w-[100vw] overflow-hidden bg-[#F6F2EE] text-[#191A19] outline-none"
+      className="min-h-screen overflow-hidden bg-[#F6F2EE] text-[#191A19] outline-none"
     >
       <Navbar />
 
-      <div className="relative max-w-[100vw] overflow-hidden">
-        <div aria-hidden="true" className="pointer-events-none absolute left-0 top-10 hidden h-80 w-80 -translate-x-1/3 rounded-full bg-[#EFEEF7]/90 blur-3xl sm:block" />
-        <div aria-hidden="true" className="pointer-events-none absolute right-0 top-28 hidden h-96 w-96 translate-x-1/4 rounded-full bg-[#F3D4A5]/45 blur-3xl sm:block" />
-        <div aria-hidden="true" className="pointer-events-none absolute left-[40%] top-[34rem] hidden h-72 w-72 rounded-full bg-[#DFCAB9]/40 blur-3xl md:block" />
+      <div className="relative">
+        <div aria-hidden="true" className="pointer-events-none absolute left-[-10%] top-10 h-80 w-80 rounded-full bg-[#EFEEF7]/90 blur-3xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute right-[-8%] top-28 h-96 w-96 rounded-full bg-[#F3D4A5]/45 blur-3xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute left-[40%] top-[34rem] h-72 w-72 rounded-full bg-[#DFCAB9]/40 blur-3xl" />
 
-        <section className="relative mx-auto max-w-6xl overflow-hidden px-5 pb-14 pt-32 sm:px-8 md:pb-20 md:pt-44 lg:px-12">
-          <div className="relative grid min-w-0 items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
-            <div className="min-w-0">
+        <section className="mx-auto max-w-6xl px-6 pb-14 pt-36 md:px-10 md:pb-20 md:pt-44">
+          <div className="relative grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+            <div>
               <motion.div
                 initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 18 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -270,7 +269,7 @@ function Home() {
               </motion.div>
 
               <motion.h1
-                className="mt-6 max-w-4xl text-[clamp(3.2rem,13vw,6.5rem)] font-medium leading-[0.95] tracking-tight text-[#191A19]"
+                className="mt-6 max-w-4xl text-5xl font-medium leading-[0.98] tracking-tight text-[#191A19] md:text-7xl"
                 initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 28 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: shouldReduceMotion ? 0.01 : 0.6, delay: shouldReduceMotion ? 0 : 0.05 }}
@@ -283,7 +282,7 @@ function Home() {
               </motion.h1>
 
               <motion.p
-                className="mt-7 max-w-2xl text-lg leading-8 text-[#656963] sm:text-xl lg:text-2xl"
+                className="mt-7 max-w-2xl text-lg leading-8 text-[#656963] md:text-xl"
                 initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 22 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: shouldReduceMotion ? 0.01 : 0.55, delay: shouldReduceMotion ? 0 : 0.16 }}
@@ -293,7 +292,7 @@ function Home() {
               </motion.p>
 
               <motion.div
-                className="mt-9 flex flex-col items-stretch gap-4 sm:flex-row sm:items-center"
+                className="mt-9 flex flex-wrap items-center gap-4"
                 initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: shouldReduceMotion ? 0.01 : 0.5, delay: shouldReduceMotion ? 0 : 0.28 }}
@@ -312,12 +311,12 @@ function Home() {
             </div>
 
             <motion.div
-              className="relative mx-auto w-full max-w-[min(100%,28rem)]"
+              className="relative mx-auto w-full max-w-md"
               initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.94, y: shouldReduceMotion ? 0 : 24 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: shouldReduceMotion ? 0.01 : 0.65, delay: shouldReduceMotion ? 0 : 0.18 }}
             >
-              <div aria-hidden="true" className="absolute inset-0 rounded-[3rem] bg-gradient-to-br from-[#6353AC]/25 via-[#F3D4A5]/45 to-[#EFEEF7]/90 blur-2xl sm:-inset-7" />
+              <div aria-hidden="true" className="absolute -inset-7 rounded-[3rem] bg-gradient-to-br from-[#6353AC]/25 via-[#F3D4A5]/45 to-[#EFEEF7]/90 blur-2xl" />
 
               <motion.div
                 className="relative rounded-[2.5rem] border border-[#191A19]/10 bg-[#F6F2EE]/80 p-4 shadow-[0_28px_90px_rgba(25,26,25,0.16)] backdrop-blur"
@@ -333,7 +332,7 @@ function Home() {
             </motion.div>
           </div>
         </section>
-        <Reveal className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-4 px-5 pb-16 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:px-12">
+        <Reveal className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-4 px-6 pb-16 md:grid-cols-4 md:px-10">
          {[
            ["HCI", "MSc in progress"],
            ["Psychology", "BSc background"],
@@ -348,15 +347,15 @@ function Home() {
 
         <section
           id="projects"
-          className="relative overflow-hidden scroll-mt-28 rounded-t-[2rem] bg-[#F6F2EE] px-5 py-20 shadow-[0_-24px_80px_rgba(25,26,25,0.06)] outline-none sm:px-8 md:rounded-t-[3rem] md:py-28 lg:px-12"
+          className="relative scroll-mt-28 rounded-t-[3rem] bg-[#F6F2EE] px-6 py-20 shadow-[0_-24px_80px_rgba(25,26,25,0.06)] outline-none md:px-10 md:py-28"
         >
-          <div aria-hidden="true" className="pointer-events-none absolute right-0 top-10 hidden h-60 w-60 translate-x-1/4 rounded-full bg-[#E0DDEE]/80 blur-3xl sm:block" />
+          <div aria-hidden="true" className="pointer-events-none absolute right-10 top-10 h-60 w-60 rounded-full bg-[#E0DDEE]/80 blur-3xl" />
 
           <div className="mx-auto max-w-6xl">
             <Reveal className="mb-12 max-w-3xl">
               <SectionLabel>Selected work</SectionLabel>
 
-              <h2 className="mt-5 text-[clamp(2.25rem,8vw,3.75rem)] font-medium leading-tight text-[#191A19]">
+              <h2 className="mt-5 text-4xl font-medium leading-tight text-[#191A19] md:text-6xl">
                 A few projects where research, structure, and content shaped the experience.
               </h2>
 
@@ -374,17 +373,17 @@ function Home() {
           </div>
         </section>
 
-        <section id="approach" className="relative overflow-hidden scroll-mt-28 px-5 py-20 outline-none sm:px-8 md:py-28 lg:px-12">
+        <section id="approach" className="relative scroll-mt-28 px-6 py-20 outline-none md:px-10 md:py-28">
           <div className="mx-auto max-w-6xl">
             <Reveal className="mb-10 max-w-3xl">
               <SectionLabel>How I work</SectionLabel>
 
-              <h2 className="mt-5 text-[clamp(2.25rem,8vw,3.75rem)] font-medium leading-tight text-[#191A19]">
+              <h2 className="mt-5 text-4xl font-medium leading-tight text-[#191A19] md:text-6xl">
                 Understand the problem, structure the flow, refine the details.
               </h2>
             </Reveal>
 
-            <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+            <div className="grid gap-5 md:grid-cols-3">
               {[
                 {
                   icon: Search,
@@ -408,12 +407,12 @@ function Home() {
           </div>
         </section>
 
-        <section id="about" className="relative overflow-hidden scroll-mt-28 px-5 py-20 outline-none sm:px-8 md:py-28 lg:px-12">
-          <Reveal className="mx-auto grid max-w-6xl grid-cols-1 gap-8 rounded-[2rem] border border-[#191A19]/10 bg-[#F6F2EE]/85 p-6 shadow-[0_24px_80px_rgba(25,26,25,0.08)] backdrop-blur sm:p-8 md:rounded-[3rem] lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:p-12">
+        <section id="about" className="scroll-mt-28 px-6 py-20 outline-none md:px-10 md:py-28">
+          <Reveal className="mx-auto grid max-w-6xl gap-10 rounded-[3rem] border border-[#191A19]/10 bg-[#F6F2EE]/85 p-8 shadow-[0_24px_80px_rgba(25,26,25,0.08)] backdrop-blur md:grid-cols-[0.8fr_1.2fr] md:items-start md:p-12">
             <div>
               <SectionLabel>About me</SectionLabel>
 
-              <h2 className="mt-4 text-[clamp(2.1rem,7vw,3rem)] font-medium text-[#191A19]">
+              <h2 className="mt-4 text-4xl font-medium text-[#191A19] md:text-5xl">
                 I design with curiosity, structure, and attention to people.
               </h2>
             </div>
@@ -433,17 +432,17 @@ function Home() {
           </Reveal>
         </section>
 
-        <section id="contact" className="relative overflow-hidden scroll-mt-28 px-5 pb-10 outline-none sm:px-8 md:pb-16 lg:px-12">
-          <Reveal className="relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-[#191A19] p-6 text-[#F6F2EE] shadow-[0_30px_100px_rgba(25,26,25,0.24)] sm:p-8 md:rounded-[3rem] md:p-16">
-            <div aria-hidden="true" className="absolute right-0 top-0 h-56 w-56 translate-x-1/3 -translate-y-1/3 rounded-full bg-[#6353AC]/60 blur-3xl md:h-72 md:w-72" />
-            <div aria-hidden="true" className="absolute bottom-0 left-6 h-56 w-56 translate-y-1/3 rounded-full bg-[#F3D4A5]/35 blur-3xl md:h-72 md:w-72" />
+        <section id="contact" className="scroll-mt-28 px-6 pb-10 outline-none md:px-10 md:pb-16">
+          <Reveal className="relative mx-auto max-w-6xl overflow-hidden rounded-[3rem] bg-[#191A19] p-8 text-[#F6F2EE] shadow-[0_30px_100px_rgba(25,26,25,0.24)] md:p-16">
+            <div aria-hidden="true" className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-[#6353AC]/60 blur-3xl" />
+            <div aria-hidden="true" className="absolute bottom-[-7rem] left-10 h-72 w-72 rounded-full bg-[#F3D4A5]/35 blur-3xl" />
 
             <div className="relative max-w-3xl">
               <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#F3D4A5]">
                 Contact
               </p>
 
-              <h2 className="mt-5 text-[clamp(2.25rem,8vw,3.75rem)] font-medium leading-tight text-[#F6F2EE]">
+              <h2 className="mt-5 text-4xl font-medium leading-tight text-[#F6F2EE] md:text-6xl">
                 Want to contact me?
               </h2>
 
@@ -451,7 +450,7 @@ function Home() {
                 Here are the links.
               </p>
 
-              <div className="mt-9 flex flex-col gap-4 sm:flex-row">
+              <div className="mt-9 flex flex-wrap gap-4">
                 <Button href="mailto:arezoosaeidish@gmail.com" variant="contactOutline">
                   Email me{" "}
                   <ArrowRight size={17} aria-hidden="true" className="transition group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
@@ -469,7 +468,7 @@ function Home() {
           </Reveal>
         </section>
 
-        <footer className="mx-auto flex max-w-6xl flex-col gap-2 px-5 pb-8 text-sm text-[#656963] sm:flex-row sm:justify-between sm:px-8 lg:px-12">
+        <footer className="mx-auto flex max-w-6xl justify-between px-6 pb-8 text-sm text-[#656963] md:px-10">
           <span>Arezoo Saeidisharifabad</span>
           <span>UX Designer · Germany</span>
         </footer>
@@ -510,7 +509,7 @@ function Button({ href, variant = "primary", children, ariaLabel }) {
       aria-label={ariaLabel}
       target={isExternal ? "_blank" : undefined}
       rel={isExternal ? "noreferrer" : undefined}
-      className={`group inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold no-underline outline-none transition hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-offset-2 motion-reduce:hover:translate-y-0 sm:w-auto ${classes[variant]}`}
+      className={`group inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold no-underline outline-none transition hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-offset-2 motion-reduce:hover:translate-y-0 ${classes[variant]}`}
     >
       <span className="inline-flex items-center gap-2 !text-current [&_svg]:text-current">
         {children}
@@ -564,24 +563,24 @@ function ProjectCard({ title, type, description, link, image, accent, mockup, in
     >
       <Link
         to={link}
-        className="group grid h-full w-full max-w-full grid-cols-1 overflow-hidden rounded-[2rem] border border-[#191A19]/10 bg-[#EEE6DD] p-3 shadow-[0_20px_70px_rgba(25,26,25,0.08)] outline-none transition focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F6F2EE] sm:p-4 md:grid-cols-[0.85fr_1.15fr]"
+        className="group grid h-full w-full overflow-hidden rounded-[2rem] border border-[#191A19]/10 bg-[#EEE6DD] p-4 shadow-[0_20px_70px_rgba(25,26,25,0.08)] outline-none transition focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F6F2EE] md:grid-cols-[0.85fr_1.15fr]"
       >
-        <div className={`relative min-h-56 overflow-hidden rounded-[1.6rem] bg-gradient-to-br ${accent} p-4 sm:min-h-64 sm:p-5`}>
+        <div className={`relative min-h-64 overflow-hidden rounded-[1.6rem] bg-gradient-to-br ${accent} p-5`}>
           <div aria-hidden="true" className="absolute -right-12 -top-10 h-44 w-44 rounded-full bg-white/50 blur-2xl transition group-hover:scale-125 motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
           <ProjectMockup image={image} title={title} type={mockup} />
         </div>
 
-        <div className="flex min-h-0 flex-col justify-between p-4 md:min-h-72 md:p-6">
+        <div className="flex min-h-72 flex-col justify-between p-4 md:p-6">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#6353AC]">
               {type}
             </p>
 
-            <h3 className="mt-4 text-2xl font-medium leading-tight text-[#191A19] sm:text-3xl">
+            <h3 className="mt-4 text-3xl font-medium leading-tight text-[#191A19]">
               {title}
             </h3>
 
-            <p className="mt-4 max-w-2xl text-base leading-7 text-[#656963] sm:text-lg sm:leading-8">
+            <p className="mt-4 max-w-2xl text-lg leading-8 text-[#656963]">
               {description}
             </p>
           </div>
@@ -598,7 +597,7 @@ function ProjectCard({ title, type, description, link, image, accent, mockup, in
 
 function ProjectMockup({ image, title, type }) {
   return (
-    <div className="relative flex h-full min-h-52 items-center justify-center sm:min-h-60">
+    <div className="relative flex h-full min-h-60 items-center justify-center">
       {image ? (
         <img
           src={image}
@@ -654,7 +653,7 @@ function ApproachCard({ icon: Icon, title, text, index }) {
 
   return (
     <motion.article
-      className="group rounded-[2rem] border border-[#191A19]/10 bg-[#F6F2EE]/90 p-6 shadow-sm backdrop-blur transition hover:shadow-[0_24px_70px_rgba(25,26,25,0.1)] motion-reduce:transition-none sm:p-7"
+      className="group rounded-[2rem] border border-[#191A19]/10 bg-[#F6F2EE]/90 p-7 shadow-sm backdrop-blur transition hover:shadow-[0_24px_70px_rgba(25,26,25,0.1)] motion-reduce:transition-none"
       initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
@@ -683,23 +682,23 @@ function ApproachCard({ icon: Icon, title, text, index }) {
 
 function ERSIS() {
   return (
-    <main id="main-content" tabIndex={-1} className="min-h-screen w-full max-w-[100vw] overflow-hidden bg-base text-text outline-none">
+    <main id="main-content" tabIndex={-1} className="min-h-screen bg-base text-text outline-none">
       <Navbar />
 
-      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8 md:px-10 lg:px-24">
+      <div className="mx-auto max-w-6xl px-6 py-20 md:px-24">
         <section className="relative py-24 md:py-28">
           <p className="mb-6 text-sm uppercase tracking-[0.25em] text-muted">
             UX Case Study / B2B App / Android
           </p>
 
-          <h1 className="max-w-4xl text-[clamp(3rem,12vw,4.5rem)] font-medium leading-tight">
+          <h1 className="max-w-4xl text-5xl font-medium leading-tight md:text-7xl">
             Turning an underused ordering app into{" "}
             <em className="font-serif italic text-primary">
               a faster reorder tool
             </em>
           </h1>
 
-          <p className="mt-8 max-w-2xl text-lg leading-8 text-muted sm:text-xl sm:leading-9">
+          <p className="mt-8 max-w-2xl text-xl leading-9 text-muted">
             ERSIS already had a mobile app for workshop owners. The problem was
             not that customers disliked digital ordering — the app simply did
             not match how ordering happened in a busy workshop.
@@ -978,10 +977,10 @@ function ERSIS() {
 
 function Chenaran() {
   return (
-    <main id="main-content" tabIndex={-1} className="min-h-screen w-full max-w-[100vw] overflow-hidden bg-base text-text outline-none">
+    <main id="main-content" tabIndex={-1} className="min-h-screen bg-base text-text outline-none">
       <Navbar />
 
-      <div className="mx-auto w-full max-w-6xl px-5 py-24 sm:px-8 md:px-10 lg:px-28">
+      <div className="mx-auto max-w-6xl px-6 py-24 md:px-28">
         <CaseHero
           label="UX Case Study"
           title={
@@ -1216,10 +1215,10 @@ function Chenaran() {
 
 function Bosch() {
   return (
-    <main id="main-content" tabIndex={-1} className="min-h-screen w-full max-w-[100vw] overflow-hidden bg-base text-text outline-none">
+    <main id="main-content" tabIndex={-1} className="min-h-screen bg-base text-text outline-none">
       <Navbar />
 
-      <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8 md:px-10">
+      <div className="mx-auto max-w-6xl px-6 py-20 md:px-10">
         <CaseHero
           label="UX Writing Case Study"
           title={<>From Product Copy to UX Writing Systems</>}
@@ -1452,15 +1451,15 @@ function Bosch() {
 
 function Placeholder({ title }) {
   return (
-    <main id="main-content" tabIndex={-1} className="min-h-screen w-full max-w-[100vw] overflow-hidden bg-base text-text outline-none">
+    <main id="main-content" tabIndex={-1} className="min-h-screen bg-base text-text outline-none">
       <Navbar />
 
-      <div className="mx-auto w-full max-w-6xl px-5 py-24 sm:px-8 md:px-10">
+      <div className="mx-auto max-w-6xl px-6 py-24 md:px-10">
         <p className="mb-6 text-sm uppercase tracking-[0.25em] text-muted">
           UX Case Study
         </p>
 
-        <h1 className="max-w-4xl text-[clamp(3rem,12vw,4.5rem)] font-medium leading-tight">
+        <h1 className="max-w-4xl text-5xl font-medium leading-tight md:text-7xl">
           {title}
         </h1>
 
@@ -1480,13 +1479,13 @@ function Placeholder({ title }) {
 
 function CaseHero({ label, title, subtitle, chips }) {
   return (
-    <section className="relative max-w-full overflow-hidden rounded-[2rem] border border-text/10 bg-card/75 p-6 shadow-[0_24px_90px_rgba(30,27,24,0.08)] backdrop-blur sm:p-8 md:rounded-[3rem] md:p-14">
-      <div aria-hidden="true" className="pointer-events-none absolute right-0 top-0 h-56 w-56 translate-x-1/3 -translate-y-1/3 rounded-full bg-soft/70 blur-3xl md:h-72 md:w-72" />
-      <div aria-hidden="true" className="pointer-events-none absolute bottom-0 left-0 h-52 w-52 -translate-x-1/4 translate-y-1/4 rounded-full bg-accent/35 blur-3xl md:h-64 md:w-64" />
+    <section className="relative overflow-hidden rounded-[3rem] border border-text/10 bg-card/75 p-8 shadow-[0_24px_90px_rgba(30,27,24,0.08)] backdrop-blur md:p-14">
+      <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-16 h-72 w-72 rounded-full bg-soft/70 blur-3xl" />
+      <div aria-hidden="true" className="pointer-events-none absolute bottom-0 left-0 h-64 w-64 rounded-full bg-accent/35 blur-3xl" />
       <div className="relative">
         <SectionLabel>{label}</SectionLabel>
 
-        <h1 className="mt-7 max-w-5xl text-[clamp(3rem,12vw,4.5rem)] font-medium leading-[1.02] tracking-tight">
+        <h1 className="mt-7 max-w-5xl text-5xl font-medium leading-[1.02] tracking-tight md:text-7xl">
           {title}
         </h1>
 
@@ -1515,8 +1514,8 @@ function Chip({ children }) {
 function CaseSection({ title, children }) {
   return (
     <Reveal className="py-10 md:py-14">
-      <section className="max-w-full overflow-hidden rounded-[2rem] border border-text/10 bg-card/70 p-6 shadow-sm backdrop-blur sm:p-7 md:rounded-[2.25rem] md:p-10">
-        <h2 className="mb-6 max-w-4xl text-[clamp(2.1rem,8vw,3rem)] font-medium leading-tight">{title}</h2>
+      <section className="rounded-[2.25rem] border border-text/10 bg-card/70 p-7 shadow-sm backdrop-blur md:p-10">
+        <h2 className="mb-6 max-w-4xl text-4xl font-medium leading-tight md:text-5xl">{title}</h2>
         <div className="space-y-5 text-lg leading-8 text-muted">
           {children}
         </div>
@@ -1528,7 +1527,7 @@ function CaseSection({ title, children }) {
 function CaseStep({ number, label, title, children }) {
   return (
     <Reveal className="py-10 md:py-14">
-      <section className="grid max-w-full grid-cols-1 gap-8 overflow-hidden rounded-[2rem] border border-text/10 bg-card/70 p-6 shadow-sm backdrop-blur sm:p-7 md:grid-cols-[180px_1fr] md:rounded-[2.25rem] md:p-10 lg:grid-cols-[220px_1fr]">
+      <section className="grid gap-8 rounded-[2.25rem] border border-text/10 bg-card/70 p-7 shadow-sm backdrop-blur md:grid-cols-[220px_1fr] md:p-10">
         <div className="flex items-center gap-3 self-start text-sm text-muted md:sticky md:top-28">
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-text text-xs font-bold text-white">
             {number}
@@ -1537,7 +1536,7 @@ function CaseStep({ number, label, title, children }) {
         </div>
 
         <div>
-          <h2 className="max-w-3xl text-[clamp(2rem,7vw,3rem)] font-medium leading-snug">
+          <h2 className="max-w-3xl text-3xl font-medium leading-snug md:text-5xl">
             {title}
           </h2>
 
@@ -1552,7 +1551,7 @@ function CaseStep({ number, label, title, children }) {
 
 function Quote({ children }) {
   return (
-    <div className="my-10 rounded-[2rem] border border-primary/20 bg-primary/10 p-6 text-lg font-medium italic leading-8 text-text shadow-sm sm:p-7 sm:text-xl">
+    <div className="my-10 rounded-[2rem] border border-primary/20 bg-primary/10 p-7 text-xl font-medium italic leading-8 text-text shadow-sm">
       {children}
     </div>
   );
@@ -1676,7 +1675,7 @@ function Artifact({ title, label, children }) {
     createPortal(
       <div
         ref={modalRef}
-        className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm sm:p-6"
+        className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/85 p-6 backdrop-blur-sm"
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
@@ -1687,7 +1686,7 @@ function Artifact({ title, label, children }) {
           type="button"
           onClick={closeModal}
           aria-label="Close expanded image"
-          className="fixed right-4 top-4 z-[100000] rounded-full bg-white px-4 py-2 text-sm font-medium text-black shadow-lg outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:right-6 sm:top-6"
+          className="fixed right-6 top-6 z-[100000] rounded-full bg-white px-4 py-2 text-sm font-medium text-black shadow-lg outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
         >
           Close
         </button>
@@ -1708,7 +1707,7 @@ function Artifact({ title, label, children }) {
 
   return (
     <div className="my-10">
-      <div className="flex flex-col gap-1 text-xs font-bold uppercase tracking-[0.15em] text-muted sm:flex-row sm:justify-between sm:gap-4">
+      <div className="flex justify-between gap-4 text-xs font-bold uppercase tracking-[0.15em] text-muted">
         <span>{title}</span>
         <span>{label}</span>
       </div>
@@ -1718,7 +1717,7 @@ function Artifact({ title, label, children }) {
         type="button"
         onClick={() => setIsOpen(true)}
         className="group mt-3 w-full overflow-hidden rounded-[2rem] border border-text/10 bg-card p-5 text-center text-muted shadow-[0_18px_60px_rgba(30,27,24,0.07)] outline-none transition hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(30,27,24,0.12)] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-base motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:p-8
-        [&_img]:mx-auto [&_img]:max-h-[720px] [&_img]:max-w-full [&_img]:rounded-[1.5rem] [&_img]:object-contain [&_img]:shadow-sm"
+        [&_img]:mx-auto [&_img]:max-h-[720px] [&_img]:rounded-[1.5rem] [&_img]:object-contain [&_img]:shadow-sm"
         aria-label={`Expand ${title}`}
       >
         {children}
@@ -1798,7 +1797,7 @@ function BeforeAfterGallery({ title, label, items }) {
 
   return (
     <div className="my-10">
-      <div className="flex flex-col gap-1 text-xs font-bold uppercase tracking-[0.15em] text-muted sm:flex-row sm:justify-between sm:gap-4">
+      <div className="flex justify-between gap-4 text-xs font-bold uppercase tracking-[0.15em] text-muted">
         <span>{title}</span>
         <span>{label}</span>
       </div>
@@ -1846,7 +1845,7 @@ function BeforeAfterGallery({ title, label, items }) {
         createPortal(
           <div
             ref={modalRef}
-            className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm sm:p-6"
+            className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/85 p-6 backdrop-blur-sm"
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
@@ -1857,7 +1856,7 @@ function BeforeAfterGallery({ title, label, items }) {
               type="button"
               onClick={close}
               aria-label="Close before and after gallery"
-              className="fixed right-4 top-4 z-[100000] rounded-full bg-white px-4 py-2 text-sm font-medium text-black outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:right-6 sm:top-6"
+              className="fixed right-6 top-6 z-[100000] rounded-full bg-white px-4 py-2 text-sm font-medium text-black outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             >
               Close
             </button>
@@ -1869,7 +1868,7 @@ function BeforeAfterGallery({ title, label, items }) {
                 prev();
               }}
               aria-label="Show previous comparison"
-              className="fixed bottom-4 left-4 z-[100000] rounded-full bg-white px-4 py-3 text-black outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:bottom-auto sm:left-6 sm:top-1/2"
+              className="fixed left-6 top-1/2 z-[100000] rounded-full bg-white px-4 py-3 text-black outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             >
               ←
             </button>
@@ -1881,7 +1880,7 @@ function BeforeAfterGallery({ title, label, items }) {
                 next();
               }}
               aria-label="Show next comparison"
-              className="fixed bottom-4 right-4 z-[100000] rounded-full bg-white px-4 py-3 text-black outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:bottom-auto sm:right-6 sm:top-1/2"
+              className="fixed right-6 top-1/2 z-[100000] rounded-full bg-white px-4 py-3 text-black outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             >
               →
             </button>
@@ -1902,7 +1901,7 @@ function BeforeAfterGallery({ title, label, items }) {
                   <img
                     src={items[openIndex].before}
                     alt={`${items[openIndex].title} before redesign showing the older Chenaran interface`}
-                    className="max-h-[75vh] w-auto max-w-full rounded-[1.5rem]"
+                    className="max-h-[75vh] w-auto rounded-[1.5rem]"
                   />
                 </div>
 
@@ -1915,7 +1914,7 @@ function BeforeAfterGallery({ title, label, items }) {
                   <img
                     src={items[openIndex].after}
                     alt={`${items[openIndex].title} after redesign showing the improved Chenaran interface`}
-                    className="max-h-[75vh] w-auto max-w-full rounded-[1.5rem]"
+                    className="max-h-[75vh] w-auto rounded-[1.5rem]"
                   />
                 </div>
               </div>
@@ -1953,8 +1952,8 @@ function Learning({ n, text }) {
 function ReflectionCard({ title, text }) {
   return (
     <Reveal className="mt-16">
-      <div className="relative overflow-hidden rounded-[2rem] border border-primary/20 bg-primary/10 p-6 shadow-[0_22px_80px_rgba(30,27,24,0.08)] sm:p-8 md:rounded-[3rem] md:p-14">
-        <div aria-hidden="true" className="absolute right-0 top-0 h-52 w-52 translate-x-1/3 -translate-y-1/3 rounded-full bg-soft/70 blur-3xl md:h-64 md:w-64" />
+      <div className="relative overflow-hidden rounded-[3rem] border border-primary/20 bg-primary/10 p-8 shadow-[0_22px_80px_rgba(30,27,24,0.08)] md:p-14">
+        <div aria-hidden="true" className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-soft/70 blur-3xl" />
 
         <p className="relative text-sm font-bold uppercase tracking-[0.2em] text-primary/70">
           Final reflection
