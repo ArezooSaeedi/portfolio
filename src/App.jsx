@@ -245,7 +245,7 @@ function Navbar() {
 const projects = [
   {
     title: "Bosch eBike Systems",
-    type: "UX Writing & Accessibility",
+    type: "B2B and B2C UX Writing",
     description:
       "Writing clearer product communication to help eBike users understand system feedback faster.",
     link: "/projects/bosch",
@@ -308,11 +308,11 @@ function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: shouldReduceMotion ? 0.01 : 0.6, delay: shouldReduceMotion ? 0 : 0.05 }}
               >
-                Hi, I’m Arezoo. I design{" "}
+                Hi, I’m Arezoo. I design digital products that feel{" "}
                 <em className="font-serif italic text-[#6353AC]">
-                  clear and useful
+                  clear and useful.
                 </em>{" "}
-                digital products.
+  
               </motion.h1>
 
               <motion.p
@@ -321,8 +321,7 @@ function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: shouldReduceMotion ? 0.01 : 0.55, delay: shouldReduceMotion ? 0 : 0.16 }}
               >
-                I bring together UX research, interaction design, and clear product
-                communication to make complex tasks feel easier for real people.
+                I combine UX research, interaction design, and straightforward product communication to help real people handle complex tasks with less friction.
               </motion.p>
 
               <motion.div
@@ -383,19 +382,18 @@ function Home() {
           id="projects"
           className="relative scroll-mt-28 rounded-t-[3rem] bg-[#F6F2EE] px-6 py-20 shadow-[0_-24px_80px_rgba(25,26,25,0.06)] outline-none md:px-10 md:py-28"
         >
-          <div aria-hidden="true" className="pointer-events-none absolute right-10 top-10 h-60 w-60 rounded-full bg-[#E0DDEE]/80 blur-3xl" />
+          {/* <div aria-hidden="true" className="pointer-events-none absolute right-10 top-10 h-60 w-60 rounded-full bg-[#E0DDEE]/80 blur-3xl" />*\*/}
 
           <div className="mx-auto max-w-6xl">
             <Reveal className="mb-12 max-w-3xl">
               <SectionLabel>Selected work</SectionLabel>
 
               <h2 className="mt-5 text-4xl font-medium leading-tight text-[#191A19] md:text-6xl">
-                A few projects where research, structure, and content shaped the experience.
+                Here are a few projects where research, structure, and content shaped the experience.
               </h2>
 
               <p className="mt-5 text-lg leading-8 text-[#656963]">
-                From B2B ordering tools to UX writing for eBike systems, these case studies
-                show how I think through problems, flows, and details.
+                These case studies show how I think through problems, flows, and details, from B2B ordering tools to UX writing for eBike systems.
               </p>
             </Reveal>
 
@@ -447,20 +445,17 @@ function Home() {
               <SectionLabel>About me</SectionLabel>
 
               <h2 className="mt-4 text-4xl font-medium text-[#191A19] md:text-5xl">
-                I design with curiosity, structure, and attention to people.
+                I design with curiosity, structure, and close attention to people.
               </h2>
             </div>
 
             <div className="space-y-5 text-lg leading-8 text-[#656963]">
               <p>
-                My background in Psychology and Human-Computer Interaction helps me
-                look closely at how people think, decide, and move through digital products.
+                My background in Psychology and Human-Computer Interaction helps me understand how people think, make decisions, and move through digital products.
               </p>
 
               <p>
-                I’ve worked on B2B applications, mobile ordering flows, UX writing,
-                accessibility, and design system foundations. I care about making interfaces
-                that feel understandable, practical, and easy to trust.
+               I’ve worked on B2B applications, mobile ordering flows, UX writing, accessibility, and design system foundations. I care about interfaces that feel understandable, practical, and easy to trust.
               </p>
             </div>
           </Reveal>
@@ -1255,8 +1250,8 @@ function Bosch() {
       <div className="mx-auto max-w-6xl px-6 py-20 md:px-10">
         <CaseHero
           label="UX Writing Case Study"
-          title={<>From Product Copy to UX Writing Systems</>}
-          subtitle="A 2-year working student journey at Bosch eBike Systems — from supporting daily product copy requests to shaping research-driven and accessibility-focused UX writing initiatives."
+          title={<>Writing Product Copy That Helps People Move Forward</>}
+          subtitle="A two-year working student journey at Bosch eBike Systems, from supporting daily product copy requests to shaping UX writing initiatives grounded in research and accessibility."
           chips={[
             "UX Writing",
             "Design Ops",
@@ -1264,7 +1259,6 @@ function Bosch() {
             "UX Research",
             "Accessibility",
             "Crowdin",
-            "Newsletter",
             "Working Student",
             "2 Years",
           ]}
@@ -1272,39 +1266,31 @@ function Bosch() {
 
         <CaseStep number="1" label="Context" title="A writing team supporting many product teams">
           <p>
-            At Bosch eBike Systems, UX writing was part of a Design Ops setup.
-            Product teams sent requests for screens, flows, features, and
-            interface content. The UX writing team reviewed those requests,
-            created or revised copy, and aligned language across the product.
+            At Bosch eBike Systems, UX writing sat within a Design Ops setup.
+
+Product teams sent requests for screens, flows, features, and interface content. The UX writing team reviewed those requests, created or revised copy, and kept the language consistent across the product.
           </p>
 
           <p>
-            Writing was not limited to one feature or one flow. It moved across
-            different teams, product areas, and user contexts.
+            Writing did not stay limited to one feature or one flow. It moved across different teams, product areas, and user contexts.
           </p>
 
           <Callout>
-            This case study is not about one dramatic redesign. It is about learning how language works inside a real product system.
+            This case study is not about one dramatic redesign. It shows how I learned the way language works inside a real product system.
           </Callout>
         </CaseStep>
 
         <CaseStep number="2" label="Starting Point" title="I did not enter as a UX writer. I grew into one.">
           <p>
-            I joined as a working student with limited experience in UX writing.
-            My first months were about learning the craft: clarity, brevity,
-            consistency, tone, terminology, and how product copy moves through
-            agile teams.
+            I joined as a working student with limited UX writing experience. During my first months, I focused on learning the craft: clarity, concise writing, consistency, tone, terminology, and how product copy moves through agile teams.
           </p>
 
           <p>
-            I also learned that UX writing is rarely just about finding the right
-            sentence. It is about understanding constraints, asking for context,
-            responding to feedback, and making language work inside a larger
-            system.
+            I also learned that UX writing rarely means finding the right sentence on its own. It means understanding constraints, asking for context, responding to feedback, and making language work inside a larger system.
           </p>
 
           <div className="mt-8 grid gap-4 md:grid-cols-3">
-            <Learning n="01" text="Writing clearly and consistently for interface moments." />
+            <Learning n="01" text="Writing clear, consistent copies for interfaces." />
             <Learning n="02" text="Working with requests, feedback loops, and implementation constraints." />
             <Learning n="03" text="Understanding how tone, terminology, and context shape product copy." />
           </div>
@@ -1312,16 +1298,11 @@ function Bosch() {
 
         <CaseStep number="3" label="Product Copy" title="Learning how product language stays consistent across teams">
           <p>
-            My core responsibility was supporting daily UX writing requests. I
-            worked on copy for screens, flows, labels, messages, instructions,
-            and different app states.
+            My core responsibility was supporting daily UX writing requests. I worked on copy for screens, flows, labels, messages, instructions, and different app states.
           </p>
 
           <p>
-            Because requests came from multiple product teams, consistency became
-            one of the biggest challenges. A single piece of copy could not be
-            treated in isolation. It had to fit the surrounding flow, match the
-            product language, and stay understandable for riders.
+            Because multiple product teams sent requests, consistency became one of the biggest challenges. I could not treat a single piece of copy in isolation. It had to fit the surrounding flow, match the product language, and stay clear for riders.
           </p>
 
           <div className="mt-8 space-y-3">
@@ -1334,7 +1315,7 @@ function Bosch() {
             I recreated anonymized examples to show how I evaluated, revised, and sometimes preserved product copy based on clarity, context, and user understanding.
           </p>
 
-          <Artifact title="Product Copy Examples" label="Selected examples">
+          <Artifact title="Product Copy Examples" >
             <img
               src="/bosch/copyexample.png"
               alt="Anonymized product copy examples showing UX writing decisions for clarity, context, and user understanding"
@@ -1342,26 +1323,21 @@ function Bosch() {
           </Artifact>
 
           <Callout>
-            The biggest lesson was that good UX writing is not one perfect line. It is how language stays connected across a product.
+            The biggest lesson was simple: good UX writing does not come from one perfect line. It comes from keeping language connected across a product.
           </Callout>
         </CaseStep>
 
         <BigStatement>
-          Over time, I moved from writing individual strings to thinking about
-          how product language works as a system.
+          Over time, I moved from writing individual strings to thinking about product language as a system.
         </BigStatement>
 
         <CaseStep number="4" label="Research" title="Turning UX writing into something we could test">
           <p>
-            I contacted the UX research team and proposed a framework for testing
-            UX writing more intentionally. I wanted to understand not only
-            whether users could complete a flow, but whether the language helped
-            them understand what was happening.
+           I contacted the UX research team and proposed a framework for testing UX writing more intentionally. I wanted to understand not only whether users could complete a flow, but also whether the language helped them understand what was happening.
           </p>
 
           <p>
-            I mapped the research path: goals, research questions, flows to test,
-            test structure, interview questions, and analysis approach.
+            I mapped the research path: goals, research questions, flows to test, test structure, interview questions, and the analysis approach.
           </p>
 
           <div className="mt-8 space-y-3">
@@ -1370,7 +1346,7 @@ function Bosch() {
             <FocusItem number="3" title="Analyze" text="Look for moments where copy created confusion, hesitation, or wrong expectations." />
           </div>
 
-          <Artifact title="UX Writing Research Framework" label="Research planning">
+          <Artifact title="UX Writing Research Framework" >
             <img
               src="/bosch/boschresearch.png"
               alt="UX writing research framework showing research goals, evaluation dimensions, methods, tested flows, and key insight"
@@ -1384,21 +1360,15 @@ function Bosch() {
 
         <CaseStep number="5" label="Accessibility" title="Making accessibility visible through a content audit">
           <p>
-            Later, I did a deep dive into accessibility in UX writing. I started
-            with two questions: how accessible is our app content today, and how
-            can writing help improve it?
+            Later, I did a deep dive into accessibility in UX writing. I started with two questions: how accessible is our app content today, and how can writing help improve it?
           </p>
 
           <p>
-            This led to an accessibility guideline for UX writing in the app
-            system and became the starting point for a larger content audit.
+            This led to an accessibility guideline for UX writing in the app system. It also became the starting point for a larger content audit.
           </p>
 
           <p>
-            I reviewed more than 400 Crowdin strings with AI-assisted analysis against
-            accessibility-related writing principles. The audit revealed recurring patterns:
-            unclear instructions, technical wording, weak error messages, and copy that
-            needed screen context before it could be improved.
+            I reviewed more than 400 Crowdin strings with AI-assisted analysis against accessibility-related writing principles. The audit showed recurring patterns: unclear instructions, technical wording, weak error messages, and copy that needed screen context before I could improve it.
           </p>
 
           <div className="mt-8 space-y-3">
@@ -1407,7 +1377,7 @@ function Bosch() {
             <FocusItem number="3" title="Prioritize" text="Summarize findings, request screen context, and organize issues by impact." />
           </div>
 
-          <Artifact title="Accessibility Writing Audit" label="400+ Crowdin strings">
+          <Artifact title="Accessibility Writing Audit" >
             <img
               src="/bosch/accessibility.png"
               alt="Accessibility writing audit showing issue categories, prioritization, and sample audit structure"
@@ -1425,18 +1395,11 @@ function Bosch() {
 
         <CaseStep number="6" label="Working Reality" title="The work was layered, not linear">
           <p>
-            These initiatives did not happen separately from my regular work.
-            While contributing to research, accessibility, and internal
-            communication, I continued supporting daily UX writing requests:
-            creating copy, revising screens, responding to feedback, and aligning
-            language across product contexts.
+            These initiatives did not sit apart from my regular work. While I contributed to research, accessibility, and internal communication, I continued supporting daily UX writing requests: creating copy, revising screens, responding to feedback, and aligning language across product contexts.
           </p>
 
           <p>
-            This taught me what real product work looks like in a large
-            organization. It is not one clean project after another. It is
-            layered work: execution, collaboration, learning, and initiative
-            happening in parallel.
+            This taught me what real product work looks like in a large organization. It is not one clean project after another. It is layered work, with execution, collaboration, learning, and initiative happening in parallel.
           </p>
 
           <div className="grid gap-4 md:grid-cols-3">
@@ -1448,15 +1411,11 @@ function Bosch() {
 
         <CaseStep number="7" label="Growth" title="What changed in how I understand UX writing">
           <p>
-            At the beginning, I thought UX writing was mainly about choosing
-            better words. Over two years, I learned that writing is part of how a
-            product explains itself.
+            At the beginning, I thought UX writing was mainly about choosing better words. Over two years, I learned that writing shapes how a product explains itself.
           </p>
 
           <p>
-            I also learned that impact does not always come from owning a whole
-            product area. It can come from asking better questions, creating
-            structure, and contributing consistently inside a team.
+            I also learned that impact does not always come from owning a whole product area. It can come from asking better questions, creating structure, and contributing consistently within a team.
           </p>
 
           <div className="grid gap-4 md:grid-cols-3">
@@ -1757,7 +1716,7 @@ function Artifact({ title, label, children }) {
         {children}
 
         <span className="mt-4 block text-xs font-medium uppercase tracking-[0.15em] opacity-70 md:opacity-0 md:transition md:group-hover:opacity-70 md:group-focus-visible:opacity-70">
-          Click or press Enter to expand
+          Click to expand
         </span>
       </button>
 
