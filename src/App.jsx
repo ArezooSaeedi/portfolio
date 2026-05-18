@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion, useScroll } from "framer-mot
 import { useEffect, useId, useRef, useState } from "react";
 import { ArrowRight, Layers3, Mail, Menu, PenLine, Search, X } from "lucide-react";
 import { createPortal } from "react-dom";
+import { Analytics } from "@vercel/analytics/react";
 
 function SkipLink() {
   return (
@@ -101,7 +102,9 @@ function App() {
           />
         </Routes>
       </AnimatePresence>
+       <Analytics />
     </>
+    
   );
 }
 
