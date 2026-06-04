@@ -324,7 +324,7 @@ function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: shouldReduceMotion ? 0.01 : 0.55, delay: shouldReduceMotion ? 0 : 0.16 }}
               >
-                I combine UX research, interaction design, and straightforward product communication to help real people handle complex tasks with less friction.
+                I'm a UX designer with a background in psychology — which means I spend as much time understanding people as I do designing for them. I work across research, interaction design, and product writing, and I care most about the moment a user finally trusts what they're looking at.
               </motion.p>
 
               <motion.div
@@ -448,17 +448,21 @@ function Home() {
               <SectionLabel>About me</SectionLabel>
 
               <h2 className="mt-4 text-4xl font-medium text-[#191A19] md:text-5xl">
-                I design with curiosity, structure, and close attention to people.
+                I got into UX because I was already obsessed with why people do what they do.
               </h2>
             </div>
 
             <div className="space-y-5 text-lg leading-8 text-[#656963]">
               <p>
-                My background in Psychology and Human-Computer Interaction helps me understand how people think, make decisions, and move through digital products.
+                I studied psychology before I ever opened Figma. That background didn’t just teach me research methods — it taught me how people form expectations, where they lose confidence, and why a small moment of confusion can quietly break trust in a whole product.
               </p>
 
               <p>
-               I’ve worked on B2B applications, mobile ordering flows, UX writing, accessibility, and design system foundations. I care about interfaces that feel understandable, practical, and easy to trust.
+                Now I’m finishing an M.Sc. in Human-Computer Interaction while working at Bosch, where I’ve spent the last year writing product copy, running an accessibility audit across 400+ strings, and building a research framework from scratch because I wanted to know if the language we were writing was actually working.
+              </p>
+
+              <p>
+                I’m drawn to the unglamorous parts of UX — the ordering flows, the error messages, the confirmation screens. The places where a product either earns trust or quietly loses it.
               </p>
             </div>
           </Reveal>
@@ -475,11 +479,11 @@ function Home() {
               </p>
 
               <h2 className="mt-5 text-4xl font-medium leading-tight text-[#F6F2EE] md:text-6xl">
-                Want to contact me?
+                Let’s talk.
               </h2>
 
               <p className="mt-6 max-w-2xl text-lg leading-8 text-[#F6F2EE]/75">
-                Here are the links.
+                I’m open to new roles, collaborations, and good conversations about design. Whether you want to see more work, talk through a project, or just say hello — I’d love to hear from you.
               </p>
 
               <div className="mt-9 flex flex-wrap gap-4">
@@ -1253,72 +1257,54 @@ function Bosch() {
       <div className="mx-auto max-w-6xl px-6 py-20 md:px-10">
         <CaseHero
           label="UX Writing Case Study"
-          title={<>Writing Product Copy That Helps People Move Forward</>}
-          subtitle="A two-year working student journey at Bosch eBike Systems, from supporting daily product copy requests to shaping UX writing initiatives grounded in research and accessibility."
+          title={<>When the Language Hasn’t Been Reviewed in Years, Someone Has to Start.</>}
+          subtitle="A working student journey at Bosch eBike Systems — from writing daily product copy to auditing 400+ strings, identifying a systemic gap in how UX writing was evaluated, and building the research framework to close it."
           chips={[
             "UX Writing",
-            "Design Ops",
-            "Microcopy",
+            "Content Strategy",
             "UX Research",
-            "Accessibility",
+            "Accessibility Audit",
             "Crowdin",
+            "Figma",
             "Working Student",
-            "2 Years",
+            "2024 – Present",
           ]}
         />
 
-        <CaseStep number="1" label="Context" title="A writing team supporting many product teams">
+        <CaseStep number="1" label="Context" title="The product had grown. The language hadn’t kept up.">
           <p>
-            At Bosch eBike Systems, UX writing sat within a Design Ops setup.
-
-Product teams sent requests for screens, flows, features, and interface content. The UX writing team reviewed those requests, created or revised copy, and kept the language consistent across the product.
+            Bosch eBike Systems is a complex B2B and consumer product. By the time I joined, the app had been built across multiple teams over several years. The UX writing had never been systematically reviewed. No one had gone back to ask whether the language still made sense to users — or whether it ever had.
           </p>
 
           <p>
-            Writing did not stay limited to one feature or one flow. It moved across different teams, product areas, and user contexts.
+            The UX writing team sat within a Design Ops setup. Product teams sent requests for screens, flows, and interface content. We reviewed those requests, created or revised copy, and tried to keep language consistent across a product that was always changing.
           </p>
 
           <Callout>
-            This case study is not about one dramatic redesign. It shows how I learned the way language works inside a real product system.
+            This case study is not about one redesign. It’s about what happens when you take language seriously inside a product that hadn’t, and what you find when you start looking.
           </Callout>
         </CaseStep>
 
-        <CaseStep number="2" label="Starting Point" title="I did not enter as a UX writer. I grew into one.">
+        <CaseStep number="2" label="The Work" title="Writing copy across a multi-team product ecosystem">
           <p>
-            I joined as a working student with limited UX writing experience. During my first months, I focused on learning the craft: clarity, concise writing, consistency, tone, terminology, and how product copy moves through agile teams.
+            My core responsibility was supporting daily UX writing requests: screens, flows, labels, system messages, error states, and in-app communication across multiple product teams.
           </p>
 
           <p>
-            I also learned that UX writing rarely means finding the right sentence on its own. It means understanding constraints, asking for context, responding to feedback, and making language work inside a larger system.
-          </p>
-
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            <Learning n="01" text="Writing clear, consistent copies for interfaces." />
-            <Learning n="02" text="Working with requests, feedback loops, and implementation constraints." />
-            <Learning n="03" text="Understanding how tone, terminology, and context shape product copy." />
-          </div>
-        </CaseStep>
-
-        <CaseStep number="3" label="Product Copy" title="Learning how product language stays consistent across teams">
-          <p>
-            My core responsibility was supporting daily UX writing requests. I worked on copy for screens, flows, labels, messages, instructions, and different app states.
-          </p>
-
-          <p>
-            Because multiple product teams sent requests, consistency became one of the biggest challenges. I could not treat a single piece of copy in isolation. It had to fit the surrounding flow, match the product language, and stay clear for riders.
+            Moving between teams taught me something quickly. I couldn’t treat a single string in isolation. Every piece of copy had to fit the surrounding flow, match the product’s language, and stay clear for real users under real conditions — often riders checking their eBike mid-route, not sitting at a desk.
           </p>
 
           <div className="mt-8 space-y-3">
-            <FocusItem number="1" title="Create" text="Draft copy for new screens, flows, and interaction states." />
-            <FocusItem number="2" title="Revise" text="Improve existing copy based on feedback, context, and usability needs." />
-            <FocusItem number="3" title="Align" text="Keep terminology and tone consistent across different teams and product areas." />
+            <FocusItem number="1" title="Create" text="Draft copy for new screens, flows, and interaction states across product teams." />
+            <FocusItem number="2" title="Revise" text="Improve existing copy based on usability needs, stakeholder feedback, and implementation constraints." />
+            <FocusItem number="3" title="Align" text="Keep terminology and tone consistent across different teams, product areas, and app surfaces." />
           </div>
 
           <p>
-            I recreated anonymized examples to show how I evaluated, revised, and sometimes preserved product copy based on clarity, context, and user understanding.
+            I recreated anonymized examples to show how I evaluated, revised, and sometimes deliberately preserved copy based on clarity, context, and what a user actually needs to understand at that moment.
           </p>
 
-          <Artifact title="Product Copy Examples" >
+          <Artifact title="Product Copy Examples">
             <img
               src="/bosch/copyexample.png"
               alt="Anonymized product copy examples showing UX writing decisions for clarity, context, and user understanding"
@@ -1326,61 +1312,30 @@ Product teams sent requests for screens, flows, features, and interface content.
           </Artifact>
 
           <Callout>
-            The biggest lesson was simple: good UX writing does not come from one perfect line. It comes from keeping language connected across a product.
+            Good UX writing doesn’t come from finding the perfect sentence. It comes from keeping language coherent across a product that dozens of people are building at once.
           </Callout>
         </CaseStep>
 
         <BigStatement>
-          Over time, I moved from writing individual strings to thinking about product language as a system.
+          The more I worked inside the product, the more I could see that individual fixes weren’t enough. The underlying content had never been audited.
         </BigStatement>
 
-        <CaseStep number="4" label="Research" title="Turning UX writing into something we could test">
+        <CaseStep number="3" label="Accessibility Audit" title="400+ strings. One consistent finding.">
           <p>
-           I contacted the UX research team and proposed a framework for testing UX writing more intentionally. I wanted to understand not only whether users could complete a flow, but also whether the language helped them understand what was happening.
+            I proposed and ran an accessibility-focused content audit across more than 400 UI strings in Crowdin. The scope was accessibility — but what I found went beyond it.
           </p>
 
           <p>
-            I mapped the research path: goals, research questions, flows to test, test structure, interview questions, and the analysis approach.
-          </p>
-
-          <div className="mt-8 space-y-3">
-            <FocusItem number="1" title="Define" text="Clarify what we wanted to learn about user understanding." />
-            <FocusItem number="2" title="Plan" text="Select flows, write research questions, and prepare interview prompts." />
-            <FocusItem number="3" title="Analyze" text="Look for moments where copy created confusion, hesitation, or wrong expectations." />
-          </div>
-
-          <Artifact title="UX Writing Research Framework" >
-            <img
-              src="/bosch/boschresearch.png"
-              alt="UX writing research framework showing research goals, evaluation dimensions, methods, tested flows, and key insight"
-            />
-          </Artifact>
-
-          <Callout>
-            Research helped me see that users do not only use interfaces. They interpret them.
-          </Callout>
-        </CaseStep>
-
-        <CaseStep number="5" label="Accessibility" title="Making accessibility visible through a content audit">
-          <p>
-            Later, I did a deep dive into accessibility in UX writing. I started with two questions: how accessible is our app content today, and how can writing help improve it?
-          </p>
-
-          <p>
-            This led to an accessibility guideline for UX writing in the app system. It also became the starting point for a larger content audit.
-          </p>
-
-          <p>
-            I reviewed more than 400 Crowdin strings with AI-assisted analysis against accessibility-related writing principles. The audit showed recurring patterns: unclear instructions, technical wording, weak error messages, and copy that needed screen context before I could improve it.
+            The most consistent problem was error messages. When something went wrong, the product usually told users that it had. But it rarely told them what had happened, why, or what to do next. Users were left to guess. In a B2B product used by people under time pressure — service technicians, fleet managers, workshop staff — that’s not a minor inconvenience. It erodes confidence in the whole system.
           </p>
 
           <div className="mt-8 space-y-3">
-            <FocusItem number="1" title="Frame" text="Define the project scope, research questions, and evaluation criteria." />
-            <FocusItem number="2" title="Audit" text="Review 400+ Crowdin strings with AI-assisted analysis against accessibility principles." />
-            <FocusItem number="3" title="Prioritize" text="Summarize findings, request screen context, and organize issues by impact." />
+            <FocusItem number="1" title="Frame" text="Define scope, research questions, and evaluation criteria before touching a single string." />
+            <FocusItem number="2" title="Audit" text="Review 400+ Crowdin strings against accessibility writing principles, documenting issue type and severity for each." />
+            <FocusItem number="3" title="Prioritize" text="Categorize findings, request missing screen context, and organize issues by user impact — not just technical severity." />
           </div>
 
-          <Artifact title="Accessibility Writing Audit" >
+          <Artifact title="Accessibility Writing Audit">
             <img
               src="/bosch/accessibility.png"
               alt="Accessibility writing audit showing issue categories, prioritization, and sample audit structure"
@@ -1388,49 +1343,74 @@ Product teams sent requests for screens, flows, features, and interface content.
           </Artifact>
 
           <Callout>
-            The audit showed that accessibility issues in writing were not isolated copy problems. They needed a repeatable review process.
+            The audit didn’t just surface bad copy. It showed how much product language can accumulate unexamined — and what it costs users when no one is responsible for reviewing it.
           </Callout>
         </CaseStep>
 
-        <BigStatement>
-          My tasks stayed practical, but my thinking became more strategic.
-        </BigStatement>
-
-        <CaseStep number="6" label="Working Reality" title="The work was layered, not linear">
+        <CaseStep number="4" label="Terminology" title="Same product, different words — depending on who built it">
           <p>
-            These initiatives did not sit apart from my regular work. While I contributed to research, accessibility, and internal communication, I continued supporting daily UX writing requests: creating copy, revising screens, responding to feedback, and aligning language across product contexts.
+            Alongside the audit, I worked on terminology consistency across the app ecosystem. Because different teams had built different parts of the product, the same concept was often named differently depending on where you were in the flow. For users moving between screens, this created a quiet kind of confusion — hard to name, easy to feel.
           </p>
 
           <p>
-            This taught me what real product work looks like in a large organization. It is not one clean project after another. It is layered work, with execution, collaboration, learning, and initiative happening in parallel.
+            I worked to align language across teams and contributed to a shared terminology reference that could be used as the product continued to grow.
           </p>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            <Stat number="100+" label="Screens and flows touched through UX writing work" />
-            <Stat number="400+" label="Crowdin strings reviewed in the accessibility audit" />
-            <Stat  number="3" label="Writing surfaces supported: app, web portal, and internal newsletter" />
-          </div>
         </CaseStep>
 
-        <CaseStep number="7" label="Growth" title="What changed in how I understand UX writing">
+        <BigStatement>
+          At some point I realized: we could fix individual strings, but we had no way to know if the language we were writing was actually working.
+        </BigStatement>
+
+        <CaseStep number="5" label="Research Framework" title="I noticed a gap nobody had closed. So I closed it.">
           <p>
-            At the beginning, I thought UX writing was mainly about choosing better words. Over two years, I learned that writing shapes how a product explains itself.
+            Task completion and language comprehension are not the same thing. A user can complete a flow and still misunderstand what just happened. We were measuring one. Not the other.
           </p>
 
           <p>
-            I also learned that impact does not always come from owning a whole product area. It can come from asking better questions, creating structure, and contributing consistently within a team.
+            I contacted the UX research team and proposed a dedicated framework for evaluating UX writing. This wasn’t a task I’d been given. It was a gap I’d identified over months of working inside the product, and I made the case for closing it.
+          </p>
+
+          <p>
+            I designed the full research structure from scratch: what “content clarity” actually means to measure, which flows to test, how to write interview questions that surface interpretation rather than just behavior, and how to analyze what we found. The framework was approved and handed to the research team to run.
+          </p>
+
+          <div className="mt-8 space-y-3">
+            <FocusItem number="1" title="Define" text="Establish what we’re measuring — not task success, but whether users understand what the product is communicating at each step." />
+            <FocusItem number="2" title="Plan" text="Select high-friction flows. Write questions that reveal how users interpret copy, not just whether they can proceed." />
+            <FocusItem number="3" title="Analyze" text="Look for hesitation, false confidence, and moments where users complete a step but misunderstand what just happened — things standard usability tests miss." />
+          </div>
+
+          <Artifact title="UX Writing Research Framework">
+            <img
+              src="/bosch/boschresearch.png"
+              alt="UX writing research framework showing research goals, evaluation dimensions, methods, tested flows, and key insight"
+            />
+          </Artifact>
+
+          <Callout>
+            Getting the framework approved meant the work wouldn’t stop when I moved on. Someone else could pick it up, run it, and keep asking whether the language was working.
+          </Callout>
+        </CaseStep>
+
+        <CaseStep number="6" label="Reality" title="None of this happened in isolation">
+          <p>
+            These initiatives ran alongside my regular work, not instead of it. While I was building the research framework and running the audit, I was still writing and revising daily copy requests, responding to feedback from multiple teams, and keeping language aligned across product surfaces.
+          </p>
+
+          <p>
+            That’s what real product work looks like in a large organization. Not one clean project after another — layered work, where execution and initiative happen in parallel.
           </p>
 
           <div className="grid gap-4 md:grid-cols-3">
-            <Learning n="01" text="UX writing is shaped by systems, constraints, and collaboration." />
-            <Learning n="02" text="Good copy decisions become stronger when they are researched and tested." />
-            <Learning n="03" text="Accessibility in writing needs structure, not only good intentions." />
+            <Stat number="100+" label="Screens and flows touched through daily UX writing work" />
+            <Stat number="400+" label="Crowdin strings reviewed in the accessibility audit" />
+            <Stat number="3" label="Writing surfaces supported: app, web portal, and internal newsletter" />
           </div>
         </CaseStep>
 
         <ReflectionCard
-          title="I did not enter this role as a UX writer. I grew into one."
-          text="Bosch eBike taught me how UX writing works in a real product environment: through requests, reviews, research, accessibility work, internal communication, and collaboration. I learned that UX writing is not just words on a screen — it is how a product communicates clearly at scale."
+          title="What started as a copywriting brief became something closer to a content strategy practice."
+          text="The strings I rewrote are live. The audit findings are documented. The research framework is in the hands of the research team. I’m still there — and the work is still going. That’s the point: building things that don’t stop when you step away."
         />
 
         <div className="mt-10">
