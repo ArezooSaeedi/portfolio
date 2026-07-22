@@ -1,16 +1,91 @@
-import { Routes, Route, Link, useLocation } from "react-router-dom";
-import { AnimatePresence, motion, useReducedMotion, useScroll } from "framer-motion";
 import { useEffect, useId, useRef, useState } from "react";
-import { ArrowRight, Layers3, Mail, Menu, PenLine, Search, X } from "lucide-react";
+import { AnimatePresence, LazyMotion, domAnimation, m, useReducedMotion, useScroll } from "framer-motion";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  ExternalLink,
+  FileText,
+  Mail,
+  Menu,
+  X,
+} from "lucide-react";
 import { createPortal } from "react-dom";
+import { Link, Route, Routes, useLocation } from "react-router-dom";
 import { Analytics } from "@vercel/analytics/react";
+import { caseStudies, navLinks, philosophy, projects } from "./data/portfolioContent.jsx";
+
+// Motion system: two tiers, transform/opacity only.
+// - SECTION: page-level reveals (sections, heroes, page transitions)
+// - ELEMENT: small UI (cards); CSS handles hover micro-motion at --motion-fast
+const EASE_OUT = [0.22, 1, 0.36, 1];
+const SECTION_MOTION = { distance: 24, duration: 0.4 };
+const ELEMENT_MOTION = { distance: 16, duration: 0.24 };
+const STAGGER = 0.08;
+const VIEWPORT = { once: true, margin: "-80px" };
+
+// Reads/writes <meta> tags by name or property attribute so each route can
+// carry its own description + Open Graph/Twitter preview instead of the
+// generic homepage tags (relevant since this is a client-side-routed SPA).
+function getMetaTag(attr, key) {
+  return document.querySelector(`meta[${attr}="${key}"]`);
+}
+
+function setMetaContent(attr, key, content) {
+  const tag = getMetaTag(attr, key);
+  if (tag) tag.setAttribute("content", content);
+}
+
+const META_KEYS = [
+  ["name", "description"],
+  ["property", "og:title"],
+  ["property", "og:description"],
+  ["name", "twitter:title"],
+  ["name", "twitter:description"],
+];
+
+function useRouteMeta({ title, description }) {
+  useEffect(() => {
+    const previous = META_KEYS.map(([attr, key]) => [attr, key, getMetaTag(attr, key)?.getAttribute("content")]);
+
+    setMetaContent("name", "description", description);
+    setMetaContent("property", "og:title", title);
+    setMetaContent("property", "og:description", description);
+    setMetaContent("name", "twitter:title", title);
+    setMetaContent("name", "twitter:description", description);
+
+    return () => {
+      previous.forEach(([attr, key, value]) => {
+        if (value != null) setMetaContent(attr, key, value);
+      });
+    };
+  }, [title, description]);
+}
+
+function App() {
+  const location = useLocation();
+
+  return (
+    <LazyMotion features={domAnimation} strict>
+      <SkipLink />
+      <ScrollHandler />
+      {location.pathname !== "/" && <ScrollProgress />}
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+          <Route path="/projects/bosch" element={<PageTransition><CaseStudy id="bosch" /></PageTransition>} />
+          <Route path="/projects/chenaran" element={<PageTransition><CaseStudy id="chenaran" /></PageTransition>} />
+          <Route path="/projects/ersis" element={<PageTransition><CaseStudy id="ersis" /></PageTransition>} />
+        </Routes>
+      </AnimatePresence>
+      <Analytics />
+    </LazyMotion>
+  );
+}
 
 function SkipLink() {
   return (
-    <a
-      href="#main-content"
-      className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100000] focus:rounded-full focus:bg-[#191A19] focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#191A19]"
-    >
+    <a className="skip-link" href="#main-content">
       Skip to main content
     </a>
   );
@@ -18,1955 +93,822 @@ function SkipLink() {
 
 function ScrollHandler() {
   const location = useLocation();
-  const shouldReduceMotion = useReducedMotion();
+  const reduce = useReducedMotion();
 
   useEffect(() => {
-    const behavior = shouldReduceMotion ? "auto" : "smooth";
-
     if (location.hash) {
-      setTimeout(() => {
-        const element = document.getElementById(location.hash.replace("#", ""));
-
-        if (element) {
-          element.scrollIntoView({
-            behavior,
-            block: "start",
-          });
-
-          element.setAttribute("tabindex", "-1");
-          element.focus({ preventScroll: true });
-        }
-      }, 300);
-    } else {
-      window.scrollTo({ top: 0, behavior: "instant" });
-
-      requestAnimationFrame(() => {
-        document.getElementById("main-content")?.focus({ preventScroll: true });
-      });
+      const id = location.hash.slice(1);
+      window.setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+      }, 80);
+      return;
     }
-  }, [location.pathname, location.hash, shouldReduceMotion]);
+
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [location.pathname, location.hash, reduce]);
 
   return null;
 }
 
-function App() {
-  const location = useLocation();
-
-  return (
-    <>
-      <SkipLink />
-      <ScrollHandler />
-      {location.pathname !== "/" && <ScrollProgress />}
-
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          <Route
-            path="/"
-            element={
-              <PageTransition>
-                <Home />
-              </PageTransition>
-            }
-          />
-          <Route
-            path="/projects/ersis"
-            element={
-              <PageTransition>
-                <ERSIS />
-              </PageTransition>
-            }
-          />
-          <Route
-            path="/projects/chenaran"
-            element={
-              <PageTransition>
-                <Chenaran />
-              </PageTransition>
-            }
-          />
-          <Route
-            path="/projects/bosch"
-            element={
-              <PageTransition>
-                <Bosch />
-              </PageTransition>
-            }
-          />
-          <Route
-            path="/projects/case-study-four"
-            element={
-              <PageTransition>
-                <Placeholder title="Coming Soon" />
-              </PageTransition>
-            }
-          />
-        </Routes>
-      </AnimatePresence>
-       <Analytics />
-    </>
-    
-  );
-}
+let hasNavigated = false;
 
 function PageTransition({ children }) {
-  const shouldReduceMotion = useReducedMotion();
+  const reduce = useReducedMotion();
+
+  // With AnimatePresence mode="wait", this component mounts once the new page
+  // exists — the right moment to move focus to the main landmark so keyboard
+  // and screen-reader users don't lose their place. Skipped on initial load.
+  useEffect(() => {
+    if (!hasNavigated) {
+      hasNavigated = true;
+      return;
+    }
+    document.getElementById("main-content")?.focus({ preventScroll: true });
+  }, []);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+    <m.div
+      initial={{ opacity: 0, y: reduce ? 0 : SECTION_MOTION.distance }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: shouldReduceMotion ? 0 : -24 }}
-      transition={{ duration: shouldReduceMotion ? 0.01 : 0.4, ease: "easeOut" }}
+      exit={{
+        opacity: 0,
+        y: reduce ? 0 : -ELEMENT_MOTION.distance,
+        transition: { duration: reduce ? 0.01 : 0.2, ease: EASE_OUT },
+      }}
+      transition={{ duration: reduce ? 0.01 : SECTION_MOTION.duration, ease: EASE_OUT }}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
 function ScrollProgress() {
   const { scrollYProgress } = useScroll();
-
   return (
-    <motion.div
+    <m.div
       aria-hidden="true"
-      className="fixed left-0 top-0 z-[60] h-1 w-full origin-left bg-[#6353AC]"
+      className="fixed left-0 top-0 z-[80] h-1 w-full origin-left bg-[var(--accent)]"
       style={{ scaleX: scrollYProgress }}
     />
   );
 }
 
+function useActiveSection(ids, enabled) {
+  const [active, setActive] = useState("");
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    const sections = ids.map((id) => document.getElementById(id)).filter(Boolean);
+    if (!sections.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { rootMargin: "-35% 0px -55% 0px" }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [ids, enabled]);
+
+  return enabled ? active : "";
+}
+
+const SECTION_IDS = ["projects", "philosophy", "about", "contact"];
+
 function Navbar() {
+  const [open, setOpen] = useState(false);
   const location = useLocation();
-  const shouldReduceMotion = useReducedMotion();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const activeSection = useActiveSection(SECTION_IDS, location.pathname === "/");
 
-  const links = [
-    { label: "Projects", to: "/#projects" },
-    { label: "Approach", to: "/#approach" },
-    { label: "About", to: "/#about" },
-  ];
+  useEffect(() => {
+    if (!open) return;
 
-  const handleContactClick = (event) => {
-    event.preventDefault();
-
-    const contactSection = document.getElementById("contact");
-
-    if (contactSection) {
-      contactSection.scrollIntoView({
-        behavior: shouldReduceMotion ? "auto" : "smooth",
-        block: "start",
-      });
-
-      contactSection.setAttribute("tabindex", "-1");
-      contactSection.focus({ preventScroll: true });
-      window.history.pushState(null, "", "#contact");
+    function onKeyDown(event) {
+      if (event.key === "Escape") setOpen(false);
     }
-  };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open]);
 
   return (
-    <nav
-      aria-label="Main navigation"
-      className="fixed left-1/2 top-4 z-50 w-[calc(100%-1rem)] max-w-6xl -translate-x-1/2 rounded-[2rem] border border-[#191A19]/10 bg-[#F6F2EE]/90 px-3 py-3 shadow-[0_18px_60px_rgba(25,26,25,0.12)] backdrop-blur-xl sm:w-[calc(100%-2rem)] sm:px-5 md:rounded-full"
-    >
-      <div className="flex min-w-0 items-center justify-between gap-2 sm:gap-3">
-        <Link
-          to="/"
-          aria-current={location.pathname === "/" && !location.hash ? "page" : undefined}
-          onClick={() => setIsMenuOpen(false)}
-          className="min-w-0 shrink rounded-full px-2 text-base font-semibold leading-tight tracking-tight text-[#191A19] outline-none transition focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F6F2EE] sm:px-3 sm:text-lg"
-        >
-          <span className="block sm:inline">Arezoo's</span>{" "}
-          <span className="block sm:inline">Portfolio</span>
+    <header className="fixed inset-x-0 top-0 z-50 border-b-2 border-[var(--ink)] bg-[var(--paper)]/92 backdrop-blur">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8" aria-label="Main navigation">
+        <Link to="/" className="group inline-flex items-center gap-2 font-semibold" onClick={() => setOpen(false)}>
+          <span className="flex h-8 w-8 items-center justify-center border-2 border-[var(--ink)] bg-[var(--accent)] text-sm font-extrabold text-[var(--ink)] shadow-[3px_3px_0_var(--ink)]">
+            A
+          </span>
+          <span>Arezoo Saeidisharifabad</span>
         </Link>
 
-        <div className="hidden items-center gap-1 text-sm text-[#656963] md:flex">
-          {links.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              onClick={() => setIsMenuOpen(false)}
-              className="group relative rounded-full px-3 py-2 outline-none transition hover:text-[#191A19] focus-visible:text-[#191A19] focus-visible:ring-2 focus-visible:ring-[#6353AC] md:px-4"
-            >
-              <span className="relative z-10">{link.label}</span>
-              <span
-                aria-hidden="true"
-                className="absolute inset-x-3 bottom-1 h-px scale-x-0 bg-[#6353AC] transition-transform duration-300 group-hover:scale-x-100 group-focus-visible:scale-x-100"
-              />
-            </Link>
-          ))}
+        <div className="hidden items-center gap-1 md:flex">
+          {navLinks.map((link) => {
+            const anchor = link.to.split("#")[1];
+            const isActive = anchor === activeSection;
+            return (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={`nav-pill ${isActive ? "is-active" : ""}`}
+                aria-current={isActive ? "location" : undefined}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </div>
 
-        <div className="flex shrink-0 items-center gap-2">
-          <a
-            href="#contact"
-            onClick={(event) => {
-              setIsMenuOpen(false);
-              handleContactClick(event);
-            }}
-            className="group inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-[#6353AC] px-3 py-2 text-sm font-semibold text-white shadow-sm outline-none transition hover:-translate-y-0.5 hover:bg-[#3C3267] focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F6F2EE] motion-reduce:hover:translate-y-0 sm:px-4"
-          >
-            <Mail
-              size={15}
-              aria-hidden="true"
-              className="shrink-0 text-white transition duration-300 group-hover:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover:rotate-0"
-            />
-            <span className="inline-block text-white transition duration-300 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">
-              Contact
-            </span>
+        <div className="hidden items-center gap-3 md:flex">
+          <a className="icon-link" href="mailto:arezoosaeidish@gmail.com" aria-label="Email Arezoo">
+            <Mail size={18} />
           </a>
-
-          <button
-            type="button"
-            aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-            aria-expanded={isMenuOpen}
-            onClick={() => setIsMenuOpen((open) => !open)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#191A19]/10 bg-[#F6F2EE]/80 text-[#191A19] shadow-sm outline-none transition hover:border-[#6353AC]/40 hover:text-[#6353AC] focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F6F2EE] md:hidden"
+          <a
+            className="button button-dark"
+            href="https://www.linkedin.com/in/arezoo-saeidisharifabad-433b911a9/"
+            target="_blank"
+            rel="noreferrer"
           >
-            {isMenuOpen ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}
-          </button>
+            LinkedIn <span className="sr-only">(opens in new tab)</span> <ExternalLink size={15} aria-hidden="true" />
+          </a>
         </div>
-      </div>
 
-      {isMenuOpen && (
-        <div className="mt-3 grid grid-cols-3 gap-2 border-t border-[#191A19]/10 pt-3 text-center text-sm font-medium text-[#656963] md:hidden">
-          {links.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              onClick={() => setIsMenuOpen(false)}
-              className="rounded-full px-2 py-2 outline-none transition hover:bg-[#EFEEF7] hover:text-[#191A19] focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F6F2EE]"
+        <button
+          className="icon-link nav-toggle md:hidden"
+          type="button"
+          onClick={() => setOpen((value) => !value)}
+          aria-expanded={open}
+          aria-controls="mobile-nav"
+          aria-label="Toggle navigation"
+        >
+          {open ? <X size={19} /> : <Menu size={19} />}
+        </button>
+      </nav>
+
+      {open && (
+        <div id="mobile-nav" className="border-t-2 border-[var(--ink)] bg-[var(--paper)] px-4 py-4 md:hidden">
+          <div className="grid gap-2">
+            {navLinks.map((link) => (
+              <Link key={link.to} to={link.to} className="mobile-nav-link" onClick={() => setOpen(false)}>
+                {link.label}
+              </Link>
+            ))}
+          </div>
+          <div className="mt-4 flex gap-3 border-t-2 border-[var(--ink)] pt-4">
+            <a className="button button-dark flex-1" href="mailto:arezoosaeidish@gmail.com">
+              Email <Mail size={16} />
+            </a>
+            <a
+              className="button button-light flex-1"
+              href="https://www.linkedin.com/in/arezoo-saeidisharifabad-433b911a9/"
+              target="_blank"
+              rel="noreferrer"
             >
-              {link.label}
-            </Link>
-          ))}
+              LinkedIn <span className="sr-only">(opens in new tab)</span> <ExternalLink size={15} aria-hidden="true" />
+            </a>
+          </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 }
-
-const projects = [
-  {
-    title: "Bosch eBike Systems",
-    type: "B2B and B2C UX Writing",
-    description:
-      "Writing clearer product communication to help eBike users understand system feedback faster.",
-    link: "/projects/bosch",
-    image: "/bosch/thumbnail.png",
-    accent: "from-[#DFCAB9]/80 via-[#F4DCD7]/60 to-[#F6F2EE]",
-    mockup: "writing",
-  },
-  {
-    title: "Chenaran Dairy App",
-    type: "B2B Ordering Dashboard",
-    description:
-      "Designing a smoother ordering experience for routine purchases, quantity selection, and order confirmation.",
-    link: "/projects/chenaran",
-    image: "/chenaran/chenaranthumbnail.png",
-    accent: "from-[#F3D4A5]/70 via-[#EFEEF7] to-[#F6F2EE]",
-    mockup: "phone",
-  },
-  {
-    title: "ERSIS B2B App Redesign",
-    type: "B2B Android Mobile App",
-    description:
-      "Redesigning a repeat-order experience around the habits, pressure, and pace of workshop owners.",
-    link: "/projects/ersis",
-    image: "/ersis/ErsisThumbnail.png",
-    accent: "from-[#EFEEF7] via-[#EEE6DD] to-[#F6F2EE]",
-    mockup: "dashboard",
-  },
-];
 
 function Home() {
-  const shouldReduceMotion = useReducedMotion();
+  return (
+    <>
+      <Navbar />
+      <main id="main-content" tabIndex={-1} className="bg-[var(--paper)] text-[var(--ink)] outline-none">
+        <Hero />
+        <RecruiterBar />
+        <Projects />
+        <Philosophy />
+        <About />
+        <Contact />
+      </main>
+      <Footer />
+    </>
+  );
+}
+
+function Hero() {
+  const reduce = useReducedMotion();
+  const strengths = ["Enterprise UX", "UX Writing", "Accessibility", "Research", "B2B Workflows"];
 
   return (
-    <main
-      id="main-content"
-      tabIndex={-1}
-      className="min-h-screen overflow-hidden bg-[#F6F2EE] text-[#191A19] outline-none"
-    >
-      <Navbar />
+    <section className="section-grid min-h-[92vh] items-end pt-28 md:pt-36">
+      <div className="col-span-full grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
+        <div className="pb-8">
+          <Reveal immediate>
+            <p className="label">Product Designer / UX Designer, Germany</p>
+          </Reveal>
+          <m.h1
+            className="mt-6 max-w-5xl text-[clamp(3rem,8vw,7rem)] font-extrabold uppercase leading-[0.92]"
+            initial={{ opacity: 0, y: reduce ? 0 : SECTION_MOTION.distance }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: reduce ? 0.01 : SECTION_MOTION.duration, ease: EASE_OUT }}
+          >
+            I make complex B2B products clear.
+          </m.h1>
+          <Reveal delay={STAGGER} immediate>
+            <p className="mt-7 max-w-2xl text-xl leading-8 text-[var(--muted)]">
+              UX Writing at Bosch eBike Systems, trained in psychology. I specialize in
+              enterprise UX, UX writing, and accessibility — the details that decide whether
+              people trust a workflow.
+            </p>
+          </Reveal>
+          <Reveal delay={STAGGER * 2} immediate className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <a className="button button-dark" href="#projects">
+              View case studies <ArrowRight size={17} />
+            </a>
+            <a className="case-link py-2" href="mailto:arezoosaeidish@gmail.com">
+              Contact me <Mail size={16} />
+            </a>
+          </Reveal>
+        </div>
 
-      <div className="relative overflow-hidden">
-        <div aria-hidden="true" className="pointer-events-none absolute left-0 top-10 hidden h-80 w-80 -translate-x-1/3 rounded-full bg-[#EFEEF7]/90 blur-3xl sm:block" />
-        <div aria-hidden="true" className="pointer-events-none absolute right-0 top-28 hidden h-96 w-96 translate-x-1/4 rounded-full bg-[#F3D4A5]/45 blur-3xl sm:block" />
-        <div aria-hidden="true" className="pointer-events-none absolute left-[40%] top-[34rem] hidden h-72 w-72 rounded-full bg-[#DFCAB9]/40 blur-3xl md:block" />
-
-        <section className="mx-auto max-w-6xl px-6 pb-14 pt-36 md:px-10 md:pb-20 md:pt-44">
-          <div className="relative grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
-            <div>
-              <motion.div
-                initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: shouldReduceMotion ? 0.01 : 0.45 }}
-              >
-                <SectionLabel>UX Designer based in Germany</SectionLabel>
-              </motion.div>
-
-              <motion.h1
-                className="mt-6 max-w-4xl text-5xl font-medium leading-[0.98] tracking-tight text-[#191A19] md:text-7xl"
-                initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 28 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: shouldReduceMotion ? 0.01 : 0.6, delay: shouldReduceMotion ? 0 : 0.05 }}
-              >
-                Hi, I’m Arezoo. I design digital products that feel{" "}
-                <em className="font-serif italic text-[#6353AC]">
-                  clear and useful.
-                </em>{" "}
-  
-              </motion.h1>
-
-              <motion.p
-                className="mt-7 max-w-2xl text-lg leading-8 text-[#656963] md:text-xl"
-                initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 22 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: shouldReduceMotion ? 0.01 : 0.55, delay: shouldReduceMotion ? 0 : 0.16 }}
-              >
-                I'm a UX designer with a background in psychology — which means I spend as much time understanding people as I do designing for them. I work across research, interaction design, and product writing, and I care most about the moment a user finally trusts what they're looking at.
-              </motion.p>
-
-              <motion.div
-                className="mt-9 flex flex-wrap items-center gap-4"
-                initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: shouldReduceMotion ? 0.01 : 0.5, delay: shouldReduceMotion ? 0 : 0.28 }}
-              >
-                <Button href="#projects" variant="secondary">
-                  View my work{" "}
-                  <ArrowRight size={17} aria-hidden="true" className="transition group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
-                </Button>
-
-                <Button href="#contact" variant="secondary">
-                  Contact me
-                </Button>
-              </motion.div>
-
-            
+        <Reveal delay={STAGGER * 2} immediate className="relative">
+          <div className="hero-panel">
+            <img
+              src="/profile.webp"
+              alt="Portrait of Arezoo Saeidisharifabad"
+              className="hero-image"
+              width="960"
+              height="1200"
+              fetchPriority="high"
+            />
+            <div className="hero-note">
+              <span>Availability</span>
+              <strong>Open to Product Designer / UX roles in Germany</strong>
             </div>
-
-            <motion.div
-              className="relative mx-auto w-full max-w-md"
-              initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.94, y: shouldReduceMotion ? 0 : 24 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: shouldReduceMotion ? 0.01 : 0.65, delay: shouldReduceMotion ? 0 : 0.18 }}
-            >
-              <div aria-hidden="true" className="absolute -inset-7 rounded-[3rem] bg-gradient-to-br from-[#6353AC]/25 via-[#F3D4A5]/45 to-[#EFEEF7]/90 blur-2xl" />
-
-              <motion.div
-                className="relative rounded-[2.5rem] border border-[#191A19]/10 bg-[#F6F2EE]/80 p-4 shadow-[0_28px_90px_rgba(25,26,25,0.16)] backdrop-blur"
-                whileHover={shouldReduceMotion ? undefined : { y: -6, rotate: -0.5 }}
-                transition={{ type: "spring", stiffness: 220, damping: 20 }}
-              >
-                <img
-                  src="/profile.png"
-                  alt="Arezoo Saeidisharifabad portrait"
-                  className="aspect-[4/5] w-full rounded-[2rem] object-cover"
-                />
-              </motion.div>
-            </motion.div>
           </div>
-        </section>
-        <Reveal className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-4 px-6 pb-16 md:grid-cols-4 md:px-10">
-         {[
-           ["HCI", "MSc in progress"],
-           ["Psychology", "BSc background"],
-           ["4+", "years in UX"],
-           ["A11y", "Accessibility-minded design"],
-         ].map(([value, label]) => (
-         <StatCard key={label} value={value} label={label} />
-         ))}
         </Reveal>
-
-      
-
-        <section
-          id="projects"
-          className="relative scroll-mt-28 rounded-t-[3rem] bg-[#F6F2EE] px-6 py-20 shadow-[0_-24px_80px_rgba(25,26,25,0.06)] outline-none md:px-10 md:py-28"
-        >
-          {/* <div aria-hidden="true" className="pointer-events-none absolute right-10 top-10 h-60 w-60 rounded-full bg-[#E0DDEE]/80 blur-3xl" />*\*/}
-
-          <div className="mx-auto max-w-6xl">
-            <Reveal className="mb-12 max-w-3xl">
-              <SectionLabel>Selected work</SectionLabel>
-
-              <h2 className="mt-5 text-4xl font-medium leading-tight text-[#191A19] md:text-6xl">
-                Here are a few projects where research, structure, and content shaped the experience.
-              </h2>
-
-              <p className="mt-5 text-lg leading-8 text-[#656963]">
-                These case studies show how I think through problems, flows, and details, from B2B ordering tools to UX writing for eBike systems.
-              </p>
-            </Reveal>
-
-            <div className="grid gap-7 ">
-              {projects.map((project, i) => (
-                <ProjectCard key={project.title} {...project} index={i} />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="approach" className="relative scroll-mt-28 px-6 py-20 outline-none md:px-10 md:py-28">
-          <div className="mx-auto max-w-6xl">
-            <Reveal className="mb-10 max-w-3xl">
-              <SectionLabel>How I work</SectionLabel>
-
-              <h2 className="mt-5 text-4xl font-medium leading-tight text-[#191A19] md:text-6xl">
-                Understand the problem, structure the flow, refine the details.
-              </h2>
-            </Reveal>
-
-            <div className="grid gap-5 md:grid-cols-3">
-              {[
-                {
-                  icon: Search,
-                  title: "Understand",
-                  text: "I start by learning who the users are, what they need, and where the current experience gets in their way.",
-                },
-                {
-                  icon: Layers3,
-                  title: "Structure",
-                  text: "I turn research insights into user flows, wireframes, and content decisions that make the product easier to follow.",
-                },
-                {
-                  icon: PenLine,
-                  title: "Refine",
-                  text: "I test, adjust, and polish the interface so the final experience feels clear, useful, and consistent.",
-                },
-              ].map((item, index) => (
-                <ApproachCard key={item.title} {...item} index={index} />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="about" className="scroll-mt-28 px-6 py-20 outline-none md:px-10 md:py-28">
-          <Reveal className="mx-auto grid max-w-6xl gap-10 rounded-[3rem] border border-[#191A19]/10 bg-[#F6F2EE]/85 p-8 shadow-[0_24px_80px_rgba(25,26,25,0.08)] backdrop-blur md:grid-cols-[0.8fr_1.2fr] md:items-start md:p-12">
-            <div>
-              <SectionLabel>About me</SectionLabel>
-
-              <h2 className="mt-4 text-4xl font-medium text-[#191A19] md:text-5xl">
-                I got into UX because I was already obsessed with why people do what they do.
-              </h2>
-            </div>
-
-            <div className="space-y-5 text-lg leading-8 text-[#656963]">
-              <p>
-                I studied psychology before I ever opened Figma. That background didn’t just teach me research methods — it taught me how people form expectations, where they lose confidence, and why a small moment of confusion can quietly break trust in a whole product.
-              </p>
-
-              <p>
-                Now I’m finishing an M.Sc. in Human-Computer Interaction while working at Bosch, where I’ve spent the last year writing product copy, running an accessibility audit across 400+ strings, and building a research framework from scratch because I wanted to know if the language we were writing was actually working.
-              </p>
-
-              <p>
-                I’m drawn to the unglamorous parts of UX — the ordering flows, the error messages, the confirmation screens. The places where a product either earns trust or quietly loses it.
-              </p>
-            </div>
-          </Reveal>
-        </section>
-
-        <section id="contact" className="scroll-mt-28 px-6 pb-10 outline-none md:px-10 md:pb-16">
-          <Reveal className="relative mx-auto max-w-6xl overflow-hidden rounded-[3rem] bg-[#191A19] p-8 text-[#F6F2EE] shadow-[0_30px_100px_rgba(25,26,25,0.24)] md:p-16">
-            <div aria-hidden="true" className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-[#6353AC]/60 blur-3xl" />
-            <div aria-hidden="true" className="absolute bottom-[-7rem] left-10 h-72 w-72 rounded-full bg-[#F3D4A5]/35 blur-3xl" />
-
-            <div className="relative max-w-3xl">
-              <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#F3D4A5]">
-                Contact
-              </p>
-
-              <h2 className="mt-5 text-4xl font-medium leading-tight text-[#F6F2EE] md:text-6xl">
-                Let’s talk.
-              </h2>
-
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-[#F6F2EE]/75">
-                I’m open to new roles, collaborations, and good conversations about design. Whether you want to see more work, talk through a project, or just say hello — I’d love to hear from you.
-              </p>
-
-              <div className="mt-9 flex flex-wrap gap-4">
-                <Button href="mailto:arezoosaeidish@gmail.com" variant="contactOutline">
-                  Email me{" "}
-                  <ArrowRight size={17} aria-hidden="true" className="transition group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
-                </Button>
-
-                <Button
-                  href="https://www.linkedin.com/in/arezoo-saeidisharifabad-433b911a9/"
-                  variant="contactOutline"
-                  ariaLabel="Open Arezoo’s LinkedIn profile in a new tab"
-                >
-                  LinkedIn
-                </Button>
-              </div>
-            </div>
-          </Reveal>
-        </section>
-
-        <footer className="mx-auto flex max-w-6xl justify-between px-6 pb-8 text-sm text-[#656963] md:px-10">
-          <span>Arezoo Saeidisharifabad</span>
-          <span>UX Designer · Germany</span>
-        </footer>
-      </div>
-    </main>
-  );
-}
-
-function SectionLabel({ children }) {
-  return (
-    <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.24em] text-[#6353AC]">
-      <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#6353AC]" />
-      {children}
-    </p>
-  );
-}
-
-function Button({ href, variant = "primary", children, ariaLabel }) {
-  const isExternal = href?.startsWith("http");
-
-  const classes = {
-    primary:
-      "bg-[#6353AC] !text-[#F6F2EE] shadow-[0_14px_30px_rgba(99,83,172,0.25)] hover:bg-[#3C3267] hover:!text-[#F6F2EE] focus-visible:ring-[#6353AC] focus-visible:ring-offset-[#F6F2EE]",
-
-    secondary:
-      "border border-[#191A19]/20 bg-[#F6F2EE] !text-[#191A19] shadow-sm hover:border-[#6353AC] hover:bg-[#EFEEF7] hover:!text-[#191A19] focus-visible:ring-[#6353AC] focus-visible:ring-offset-[#F6F2EE]",
-
-    contactLight:
-      "bg-[#F6F2EE] !text-[#191A19] shadow-sm hover:bg-[#F3D4A5] hover:!text-[#191A19] focus-visible:ring-[#F3D4A5] focus-visible:ring-offset-[#191A19]",
-
-    contactOutline:
-      "border border-[#F6F2EE]/45 bg-transparent !text-[#F6F2EE] hover:bg-[#F6F2EE] hover:!text-[#191A19] focus-visible:ring-[#F3D4A5] focus-visible:ring-offset-[#191A19]",
-  };
-
-  return (
-    <a
-      href={href}
-      aria-label={ariaLabel}
-      target={isExternal ? "_blank" : undefined}
-      rel={isExternal ? "noreferrer" : undefined}
-      className={`group inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold no-underline outline-none transition hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-offset-2 motion-reduce:hover:translate-y-0 ${classes[variant]}`}
-    >
-      <span className="inline-flex items-center gap-2 !text-current [&_svg]:text-current">
-        {children}
-      </span>
-    </a>
-  );
-}
-
-function Reveal({ children, className = "" }) {
-  const shouldReduceMotion = useReducedMotion();
-
-  return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: shouldReduceMotion ? 0.01 : 0.6 }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-function StatCard({ value, label }) {
-  const shouldReduceMotion = useReducedMotion();
-
-  return (
-    <motion.div
-      className="w-full rounded-[2rem] border border-[#191A19]/10 bg-[#F6F2EE]/90 p-5 shadow-sm backdrop-blur"
-      whileHover={shouldReduceMotion ? undefined : { y: -5 }}
-      transition={{ type: "spring", stiffness: 260, damping: 20 }}
-    >
-      <p className="text-3xl font-semibold text-[#6353AC]">{value}</p>
-      <p className="mt-1 text-sm text-[#656963]">{label}</p>
-    </motion.div>
-  );
-}
-
-function ProjectCard({ title, type, description, link, image, accent, mockup, index }) {
-  const shouldReduceMotion = useReducedMotion();
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 34 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: shouldReduceMotion ? 0 : index * 0.09, duration: shouldReduceMotion ? 0.01 : 0.55 }}
-      viewport={{ once: true, margin: "-80px" }}
-      whileHover={shouldReduceMotion ? undefined : { y: -8, scale: 1.01 }}
-      className="h-full"
-    >
-      <Link
-        to={link}
-        className="group grid h-full w-full overflow-hidden rounded-[2rem] border border-[#191A19]/10 bg-[#EEE6DD] p-4 shadow-[0_20px_70px_rgba(25,26,25,0.08)] outline-none transition focus-visible:ring-2 focus-visible:ring-[#6353AC] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F6F2EE] md:grid-cols-[0.85fr_1.15fr]"
-      >
-        <div className={`relative min-h-64 overflow-hidden rounded-[1.6rem] bg-gradient-to-br ${accent} p-5`}>
-          <div aria-hidden="true" className="absolute -right-12 -top-10 h-44 w-44 rounded-full bg-white/50 blur-2xl transition group-hover:scale-125 motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
-          <ProjectMockup image={image} title={title} type={mockup} />
-        </div>
-
-        <div className="flex min-h-72 flex-col justify-between p-4 md:p-6">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#6353AC]">
-              {type}
-            </p>
-
-            <h3 className="mt-4 text-3xl font-medium leading-tight text-[#191A19]">
-              {title}
-            </h3>
-
-            <p className="mt-4 max-w-2xl text-lg leading-8 text-[#656963]">
-              {description}
-            </p>
-          </div>
-
-          <span className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-[#191A19]">
-            View case study
-            <ArrowRight size={17} aria-hidden="true" className="transition duration-300 group-hover:translate-x-2 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
-          </span>
-        </div>
-      </Link>
-    </motion.div>
-  );
-}
-
-function ProjectMockup({ image, title, type }) {
-  return (
-    <div className="relative flex h-full min-h-60 items-center justify-center">
-      {image ? (
-        <img
-          src={image}
-          alt={`${title} project thumbnail`}
-          className="relative z-10 h-full max-h-64 w-full rounded-[1.25rem] object-cover shadow-2xl transition duration-500 group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-        />
-      ) : type === "phone" ? (
-        <div aria-hidden="true" className="relative z-10 h-56 w-32 rounded-[2rem] border-8 border-[#191A19] bg-[#F6F2EE] p-3 shadow-2xl">
-          <div className="mb-4 h-2 rounded-full bg-[#191A19]/15" />
-
-          <div className="space-y-2">
-            <div className="h-10 rounded-xl bg-[#6353AC]/20" />
-            <div className="h-7 rounded-xl bg-[#F3D4A5]/75" />
-            <div className="h-7 rounded-xl bg-[#DFCAB9]" />
-            <div className="h-16 rounded-xl bg-[#191A19]/10" />
-          </div>
-        </div>
-      ) : type === "writing" ? (
-        <div aria-hidden="true" className="relative z-10 w-full max-w-xs rounded-[1.4rem] bg-[#F6F2EE] p-5 shadow-2xl">
-          <div className="mb-5 flex gap-2">
-            <span className="h-3 w-3 rounded-full bg-[#6353AC]" />
-            <span className="h-3 w-3 rounded-full bg-[#F3D4A5]" />
-            <span className="h-3 w-3 rounded-full bg-[#AF7B50]" />
-          </div>
-
-          <div className="space-y-3">
-            <div className="h-3 w-4/5 rounded-full bg-[#191A19]/15" />
-            <div className="h-3 w-full rounded-full bg-[#191A19]/10" />
-            <div className="h-3 w-2/3 rounded-full bg-[#191A19]/10" />
-            <div className="rounded-2xl bg-[#6353AC]/10 p-4 text-xs text-[#6353AC]">
-              Clear system feedback
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div aria-hidden="true" className="relative z-10 w-full max-w-sm rounded-[1.4rem] bg-[#F6F2EE] p-5 shadow-2xl">
-          <div className="mb-4 h-4 w-28 rounded-full bg-[#191A19]/15" />
-
-          <div className="grid grid-cols-3 gap-3">
-            <div className="col-span-2 h-24 rounded-2xl bg-[#6353AC]/20" />
-            <div className="h-24 rounded-2xl bg-[#F3D4A5]/75" />
-            <div className="h-16 rounded-2xl bg-[#DFCAB9]" />
-            <div className="col-span-2 h-16 rounded-2xl bg-[#191A19]/10" />
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function ApproachCard({ icon: Icon, title, text, index }) {
-  const shouldReduceMotion = useReducedMotion();
-
-  return (
-    <motion.article
-      className="group rounded-[2rem] border border-[#191A19]/10 bg-[#F6F2EE]/90 p-7 shadow-sm backdrop-blur transition hover:shadow-[0_24px_70px_rgba(25,26,25,0.1)] motion-reduce:transition-none"
-      initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ delay: shouldReduceMotion ? 0 : index * 0.08, duration: shouldReduceMotion ? 0.01 : 0.55 }}
-      whileHover={shouldReduceMotion ? undefined : { y: -7 }}
-    >
-      <div className="mb-8 flex items-center justify-between">
-        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E0DDEE] text-[#6353AC] transition group-hover:bg-[#6353AC] group-hover:text-white motion-reduce:transition-none">
-          <Icon size={22} aria-hidden="true" />
-        </span>
-
-        <span aria-hidden="true" className="font-serif text-4xl italic text-[#AF7B50]">
-          0{index + 1}
-        </span>
       </div>
 
-      <h3 className="text-2xl font-medium text-[#191A19]">{title}</h3>
-      <p className="mt-3 leading-7 text-[#656963]">{text}</p>
-    </motion.article>
-  );
-}
-
-/* =========================
-   ERSIS CASE STUDY
-========================= */
-
-function ERSIS() {
-  return (
-    <main id="main-content" tabIndex={-1} className="min-h-screen bg-base text-text outline-none">
-      <Navbar />
-
-      <div className="mx-auto max-w-6xl px-6 py-20 md:px-24">
-        <section className="relative py-24 md:py-28">
-          <p className="mb-6 text-sm uppercase tracking-[0.25em] text-muted">
-            UX Case Study / B2B App / Android
-          </p>
-
-          <h1 className="max-w-4xl text-5xl font-medium leading-tight md:text-7xl">
-            Turning an underused ordering app into{" "}
-            <em className="font-serif italic text-primary">
-              a faster reorder tool
-            </em>
-          </h1>
-
-          <p className="mt-8 max-w-2xl text-xl leading-9 text-muted">
-            ERSIS already had a mobile app for workshop owners. The problem was
-            not that customers disliked digital ordering — the app simply did
-            not match how ordering happened in a busy workshop.
-          </p>
-
-          <div className="mt-8 flex flex-wrap gap-2">
-            <Chip>UX Research</Chip>
-            <Chip>UX Design</Chip>
-            <Chip>Usability Testing</Chip>
-            <Chip>B2B App</Chip>
-            <Chip>Android</Chip>
-            <Chip>Junior UX Designer</Chip>
-          </div>
-
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            <div className="rounded-3xl border border-line bg-surface p-6">
-              <h3 className="mb-2 text-sm font-medium uppercase tracking-[0.2em] text-muted">
-                My role
-              </h3>
-              <p className="text-muted">
-                Junior UX Designer working on research synthesis, UX audit,
-                wireframes, flows, and prototype iterations.
-              </p>
-            </div>
-
-            <div className="rounded-3xl border border-line bg-surface p-6">
-              <h3 className="mb-2 text-sm font-medium uppercase tracking-[0.2em] text-muted">
-                Team
-              </h3>
-              <p className="text-muted">
-                Collaborated with product, sales, and development stakeholders.
-              </p>
-            </div>
-
-            <div className="rounded-3xl border border-line bg-surface p-6">
-              <h3 className="mb-2 text-sm font-medium uppercase tracking-[0.2em] text-muted">
-                Focus
-              </h3>
-              <p className="text-muted">
-                Reducing friction in repeat ordering for B2B workshop customers.
-              </p>
-            </div>
-          </div>
-
-          <Artifact title="Prototype preview" label="Final flow">
-            <img src="/ersis/ERSIS-GIF.gif" alt="Prototype preview of the redesigned ERSIS reorder flow" />
-          </Artifact>
-        </section>
-
-        <CaseSection title="The app existed. The habit did not.">
-          <p>
-            When I joined ERSIS as a junior UX designer, the company already had
-            a mobile app for B2B customers to order automotive products.
-          </p>
-
-          <p>
-            My first instinct was to look at navigation: unclear categories,
-            weak search, missing filters. But the more we looked at how orders
-            actually happened, the more the problem started to look different.
-          </p>
-
-          <p>
-            At first, it looked like a navigation problem. Maybe the categories
-            were unclear. Maybe search needed improvement. Maybe users needed
-            better filters.
-          </p>
-
-          <Artifact title="Existing app screens" label="Before">
-            <img src="/ersis/ErsisOldScreens.png" alt="Old ERSIS app screens showing the previous ordering experience" />
-          </Artifact>
-        </CaseSection>
-
-        <CaseSection title="What changed after visiting workshops">
-          <p>
-            The turning point was seeing where the app was supposed to be used.
-            Workshops were not quiet office environments. People were moving
-            between repairs, customers, tools, invoices, and inventory checks.
-          </p>
-          <p>
-            After speaking with 15 workshop owners and B2B partners, one pattern kept
-            repeating: ordering was not a separate task. It was squeezed between other
-            tasks.
-          </p>
-
-          <div className="my-10 rounded-3xl border-l-4 border-primary bg-surface p-8 text-2xl font-serif italic shadow-sm">
-            “If it takes too long, I just call my sales rep.”
-          </div>
-
-          <p>
-            That sentence helped reframe the project. The app was not only
-            competing with other digital tools. It was competing with a simple
-            habit: calling someone who already knew what they usually ordered.
-          </p>
-
-          <Artifact title="Research synthesis" label="Interviews + Empathy Map">
-            <img src="/ersis/ErsisResearch.png" alt="ERSIS research synthesis board showing workshop ordering pain points and user behavior patterns" />
-            <p className="mt-4 text-sm leading-6 text-muted">
-              I grouped interview notes into what users said, did, thought, and felt.
-              The strongest pattern was that ordering often happened under pressure,
-              while users were already interrupted by repair work or customers.
-            </p>
-          </Artifact>
-        </CaseSection>
-
-        <CaseSection title="The real pattern">
-          <div className="my-10 rounded-3xl bg-primary/10 p-8 text-3xl font-serif italic text-primary">
-            Mechanics were not browsing. They were reordering.
-          </div>
-
-          <p>
-            Most users ordered the same products repeatedly: familiar brands,
-            known quantities, and items they already trusted. The existing app
-            treated every order like a new shopping journey.
-          </p>
-
-          <p>
-            For this context, that was too slow. Users did not need more ways to
-            discover products. They needed fewer steps to repeat what they
-            already knew.
-          </p>
-
-          <Artifact title="Old app analysis" label="UX audit">
-            <img src="/ersis/ErsisAudit.png" alt="ERSIS UX audit showing issues in navigation, search, filters, and repeat ordering" />
-          </Artifact>
-        </CaseSection>
-
-        <CaseSection title="Reframing the design problem">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-3xl border border-line bg-surface p-6">
-              <h3 className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-muted">
-                Initial assumption
-              </h3>
-              <p className="text-muted">
-                How might we make the catalog easier to browse?
-              </p>
-            </div>
-
-            <div className="rounded-3xl border border-primary/20 bg-primary/10 p-6">
-              <h3 className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-primary">
-                After research
-              </h3>
-              <p className="text-text">
-                How might we help workshop owners reorder familiar products in
-                seconds?
-              </p>
-            </div>
-          </div>
-
-          <Artifact title="Assumption to insight" label="Problem framing">
-            <img src="/ersis/ErsisHMW.png" alt="How Might We map reframing the ERSIS problem from catalog browsing to faster reordering" />
-          </Artifact>
-        </CaseSection>
-
-        <CaseSection title="Design direction">
-          <p>
-            Instead of making the app feel bigger, the redesign focused on
-            making the repeat-order task shorter. The goal was to bring familiar
-            products closer to the start of the journey.
-          </p>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <Learning n="01" text="Make recent orders visible from the home screen." />
-            <Learning n="02" text="Support frequent products instead of forcing users through categories." />
-            <Learning n="03" text="Make quantity changes easier and safer during quick ordering." />
-            <Learning n="04" text="Keep checkout focused on confirmation, not extra decisions." />
-          </div>
-
-          <Artifact title="Early wireframes" label="Exploration">
-            <img src="/ersis/ersiswireframes.png" alt="ERSIS early wireframes exploring reorder-first home screen and checkout flow" className="rounded-2xl border border-line" />
-          </Artifact>
-        </CaseSection>
-
-        <CaseSection title="What changed in the flow">
-          <p>
-            The old flow started with browsing. The new flow started with
-            recognition: recent orders, frequent items, and faster access to
-            products the user already knew.
-          </p>
-
-          <p>
-            The catalog still stayed available, but it was no longer treated as
-            the main path for repeat customers.
-          </p>
-
-          <Artifact title="Old flow" label="Before">
-            <img src="/ersis/ErsisOldFlow.png" alt="Old ERSIS ordering flow starting from catalog browsing" className="rounded-2xl border border-line" />
-          </Artifact>
-
-          <Artifact title="New flow" label="After">
-            <img src="/ersis/ErsisNewFlow.png" alt="New ERSIS ordering flow starting from recent orders and frequent products" className="rounded-2xl border border-line" />
-          </Artifact>
-        </CaseSection>
-
-        <CaseSection title="Key interface decisions">
-          <div className="grid gap-4 md:grid-cols-2">
-            <Learning n="01" text="Home screen changed from promotion-first to reorder-first." />
-            <Learning n="02" text="Recent orders included product image, last ordered date, price, and Add Again." />
-            <Learning n="03" text="Product detail pages gave quantity controls more visual weight." />
-            <Learning n="04" text="Checkout became a review screen instead of another browsing step." />
-          </div>
-        </CaseSection>
-
-        <CaseSection title="Working within real constraints">
-          <p>
-            This was not a full product rebuild. The catalog structure still had
-            to stay intact, the solution had to work on older Android devices,
-            and the redesign needed to feel familiar enough for existing users.
-          </p>
-
-          <p>
-            That constraint helped the project. It pushed the solution toward
-            small, practical changes instead of a completely new experience that
-            users would have to relearn.
-          </p>
-        </CaseSection>
-
-        <CaseSection title="Validation">
-          <p>
-            We tested the updated flow with users and internal stakeholders. The
-            most useful feedback was not about the visual style. It was about
-            speed and confidence.
-          </p>
-
-          <div className="my-10 rounded-3xl border-l-4 border-primary bg-surface p-8 text-2xl font-serif italic shadow-sm">
-            “This is faster than calling now.”
-          </div>
-
-          <p>
-            That did not mean the app replaced every phone order. But it showed
-            that for familiar products, the app could finally compete with the
-            existing habit.
-          </p>
-        </CaseSection>
-
-        <CaseSection title="Outcome">
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
-            <Stat number="~27%" label="Orders placed through app before" />
-            <Stat number="~32%" label="Orders placed through app after" />
-            <Stat number="↑" label="Repeat orders" />
-            <Stat number="↓" label="Phone dependency" />
-          </div>
-
-          <p className="mt-8 text-muted">
-            The increase was modest, and it was influenced by more than design alone.
-            But the redesign gave the team a clearer product direction: instead of
-            treating the app like a catalog, we started treating it as a repeat-order
-            tool for busy workshop users.
-          </p>
-        </CaseSection>
-
-        <CaseSection title="What I learned">
-          <div className="grid gap-4 md:grid-cols-2">
-            <Learning n="01" text="Low adoption does not always mean users reject the product." />
-            <Learning n="02" text="In B2B tools, speed and habit can matter more than exploration." />
-            <Learning n="03" text="Field context reveals problems that screen reviews cannot." />
-            <Learning n="04" text="A useful redesign can be quiet: fewer steps, less friction, better fit." />
-          </div>
-        </CaseSection>
-
-        <ReflectionCard
-          title="The best feature was not a new feature"
-          text="It was making the app behave more like the way workshop owners already worked."
-        />
-
-        <div className="mt-10">
-          <BackHome />
-        </div>
-      </div>
-    </main>
-  );
-}
-
-/* =========================
-   CHENARAN CASE STUDY
-========================= */
-
-function Chenaran() {
-  return (
-    <main id="main-content" tabIndex={-1} className="min-h-screen bg-base text-text outline-none">
-      <Navbar />
-
-      <div className="mx-auto max-w-6xl px-6 py-24 md:px-28">
-        <CaseHero
-          label="UX Case Study"
-          title={
-            <>
-              Making a B2B ordering system{" "}
-              <em className="font-serif italic text-primary">
-                usable in real conditions
-              </em>
-            </>
-          }
-          subtitle="At Chenaran Dairy, users could place orders — but small moments of confusion made them double-check through calls and messages."
-          chips={[
-            "Junior UI/UX Designer",
-            "B2B Web System",
-            "Dairy Distribution",
-            "~1.5 Years",
-            "Mashhad, Iran",
-          ]}
-        />
-
-        <CaseStep number="1" label="Context" title="A system that worked — but wasn’t trusted">
-          <p>
-            Chenaran is a dairy producer supplying cheese products to restaurants and
-            distributors across Iran.
-          </p>
-          <p>
-            The company had already digitized part of its ordering process. Users could
-            browse products, enter quantities, and submit orders through a web system.
-          </p>
-          <p>
-            But even though the system was functional, orders often didn’t end there.
-            Many customers still followed up with calls or messages to confirm what
-            they had submitted.
-          </p>
-
-          <Quote>
-            Sometimes I place the order, but then I call just to make sure I did it right.
-          </Quote>
-
-          <Artifact title="Original system" label="Before redesign">
-            <img src="/chenaran/oldgif.gif" alt="Old Chenaran ordering flow showing product selection and order submission" />
-            <p>
-              The flow allowed users to complete orders — but didn’t clearly support
-              decision-making or confirmation along the way.
-            </p>
-          </Artifact>
-        </CaseStep>
-
-        <CaseStep number="2" label="My Role" title="Improving clarity within an existing system">
-          <p>
-            As a junior UI/UX designer, I worked on improving the ordering flow without
-            changing the system’s core functionality. I created wireframes, redesigned key screens in Figma, prepared interactive prototypes, and worked with developers to keep the redesign aligned with the existing system structure.
-          </p>
-          <p>
-            My focus was on identifying where users hesitated or second-guessed their
-            actions, and redesigning key parts of the flow — especially product
-            selection, quantity input, and confirmation.
-          </p>
-          <p>
-            I collaborated with the product owner and developers to iterate on
-            wireframes and refine the interaction patterns across the flow.
-          </p>
-        </CaseStep>
-
-        <CaseStep number="3" label="The Problem" title="Orders were completed — but not with confidence">
-          <p>
-            I reviewed the flow with internal stakeholders and gathered feedback from users familiar with the ordering process. Users were not getting stuck. They were completing orders — but often left
-            the system unsure whether they had done it correctly.
-          </p>
-          <p>
-            This uncertainty led to follow-up calls, manual checks, and repeated
-            clarification.
-          </p>
-
-          <ul className="list-disc space-y-2 pl-6 text-muted">
-            <li>Products were listed in ways that didn’t match ordering habits</li>
-            <li>Quantity inputs lacked guidance and context</li>
-            <li>The flow didn’t clearly show progress or next steps</li>
-            <li>Confirmation screens didn’t fully reassure users</li>
-          </ul>
-
-          <Quote>
-            I’m not sure if I ordered the right amount… I usually check again.
-          </Quote>
-
-          <Callout>
-            The issue wasn’t task failure — it was lack of confidence after completion.
-          </Callout>
-
-          <Artifact title="Where confusion happened" label="Ordering flow breakdown">
-            <img src="/chenaran/confusionmap.png" alt="Chenaran ordering flow breakdown showing where users became uncertain and needed external confirmation" />
-            <p>
-              The system allowed completion — but pushed verification outside the system.
-            </p>
-          </Artifact>
-        </CaseStep>
-
-        <CaseStep number="4" label="Design Approach" title="Reducing the need to double-check">
-          <p>
-            Instead of adding new features, I focused on making the existing flow easier
-            to understand at each step — so users didn’t have to rely on memory,
-            assumptions, or external confirmation.
-          </p>
-
-          <div className="mt-8 space-y-3">
-            <FocusItem
-              number="1"
-              title="Product selection — from SKU list to decision support"
-              text="I reorganized products into clearer groupings so users could find and select items based on how they actually order, not how the database was structured."
-            />
-            <FocusItem
-              number="2"
-              title="Quantities — adding clarity before submission"
-              text="I introduced clearer unit and packaging context, helping users understand what they were entering instead of guessing."
-            />
-            <FocusItem
-              number="3"
-              title="Flow — making progress visible"
-              text="I structured the steps so users always knew where they were and what would happen next."
-            />
-            <FocusItem
-              number="4"
-              title="Confirmation — closing the loop"
-              text="I redesigned the confirmation state to clearly show what was ordered and what would happen after submission."
-            />
-          </div>
-
-          <Artifact title="Final flow prototype" label="Interaction preview">
-            <img
-              src="/chenaran/newgif.gif"
-              alt="Final Chenaran ordering flow prototype showing product selection, delivery details, review, and confirmation"
-            />
-            <p>
-              The final flow helped users select products, confirm delivery
-              details, review the order, and understand what happens after
-              submission.
-            </p>
-          </Artifact>
-
-          <div className="mt-10 grid gap-4 md:grid-cols-2">
-            <CompareBox
-              type="old"
-              title="Before"
-              items={[
-                "Products presented as flat SKU tables",
-                "Quantity inputs required interpretation",
-                "Steps felt disconnected",
-                "Users relied on external confirmation",
-              ]}
-            />
-
-            <CompareBox
-              type="new"
-              title="After"
-              items={[
-                "Products organized around how customers typically selected items",
-                "Quantity selection became clearer and more guided",
-                "Flow showed clear progression",
-                "Confirmation reduced the need for follow-ups",
-              ]}
-            />
-          </div>
-
-          <BeforeAfterGallery
-            title="Before / After"
-            label="Ordering flow comparison"
-            items={[
-              {
-                title: "Product selection",
-                before: "/chenaran/old-orders.png",
-                after: "/chenaran/new-selection.png",
-                caption: "From a dense SKU table with unclear item hierarchy to a guided product selection flow with search, product categories, stock status, quantity controls, and a live order summary.",
-              },
-              {
-                title: "Order details",
-                before: "/chenaran/old-selection.png",
-                after: "/chenaran/new-details.png",
-                caption: "From quantity inputs mixed with disconnected logistics hints to a structured checkout step that separates delivery details, saved business information, payment method, notes, and order summary.",
-              },
-              {
-                title: "Confirmation",
-                before: "/chenaran/old-confirmation.png",
-                after: "/chenaran/new-confirmation.png",
-                caption: "From a basic success message with scattered order information to a clear confirmation screen showing order status, itemized summary, delivery/payment details, next steps, and follow-up actions.",
-              },
-            ]}
-          />
-        </CaseStep>
-
-        <CaseStep number="5" label="Impact" title="Reducing repeated friction in everyday use">
-          <p>
-            The changes did not introduce new capabilities, but improved how confidently
-            users could complete existing tasks.
-          </p>
-          <p>
-            Because this project did not include a formal post-launch analytics study, I treated impact as observed qualitative feedback from internal testing and stakeholder review. The redesigned flow appeared to reduce hesitation during quantity selection and made the confirmation step clearer.
-          </p>
-
-          <Artifact title="Observed qualitative changes" label="Observed changes">
-            <div className="grid gap-4 md:grid-cols-3">
-              <Stat number="↓" label="Hesitation" description="Users paused less during quantity selection" />
-              <Stat number="↓" label="Follow-ups" description="Fewer calls/messages after submission" />
-              <Stat number="↑" label="Confidence" description="Clearer understanding of what was submitted" />
-            </div>
-          </Artifact>
-        </CaseStep>
-
-        <CaseStep number="6" label="Learnings" title="What I took away">
-          <div className="grid gap-4 md:grid-cols-3">
-            <Learning n="01" text="Users do not always get stuck — sometimes they continue with uncertainty." />
-            <Learning n="02" text="Small ambiguities create repeated support work in real systems." />
-            <Learning n="03" text="I learned that good UX reduces how much teams need to explain the system." />
-          </div>
-        </CaseStep>
-
-        <ReflectionCard
-          title="Designing for clarity in real-world systems"
-          text="This project showed me that improving a system is not always about adding new features. Often, the most valuable work is making existing flows clearer — so users don’t need to double-check, ask, or second-guess what they’ve already done."
-        />
-
-        <div className="mt-10">
-          <BackHome />
-        </div>
-      </div>
-    </main>
-  );
-}
-
-/* =========================
-   BOSCH CASE STUDY
-========================= */
-
-function Bosch() {
-  return (
-    <main id="main-content" tabIndex={-1} className="min-h-screen bg-base text-text outline-none">
-      <Navbar />
-
-      <div className="mx-auto max-w-6xl px-6 py-20 md:px-10">
-        <CaseHero
-          label="UX Writing Case Study"
-          title={<>When the Language Hasn’t Been Reviewed in Years, Someone Has to Start.</>}
-          subtitle="A working student journey at Bosch eBike Systems — from writing daily product copy to auditing 400+ strings, identifying a systemic gap in how UX writing was evaluated, and building the research framework to close it."
-          chips={[
-            "UX Writing",
-            "Content Strategy",
-            "UX Research",
-            "Accessibility Audit",
-            "Crowdin",
-            "Figma",
-            "Working Student",
-            "2024 – Present",
-          ]}
-        />
-
-        <CaseStep number="1" label="Context" title="The product had grown. The language hadn’t kept up.">
-          <p>
-            Bosch eBike Systems is a complex B2B and consumer product. By the time I joined, the app had been built across multiple teams over several years. The UX writing had never been systematically reviewed. No one had gone back to ask whether the language still made sense to users — or whether it ever had.
-          </p>
-
-          <p>
-            The UX writing team sat within a Design Ops setup. Product teams sent requests for screens, flows, and interface content. We reviewed those requests, created or revised copy, and tried to keep language consistent across a product that was always changing.
-          </p>
-
-          <Callout>
-            This case study is not about one redesign. It’s about what happens when you take language seriously inside a product that hadn’t, and what you find when you start looking.
-          </Callout>
-        </CaseStep>
-
-        <CaseStep number="2" label="The Work" title="Writing copy across a multi-team product ecosystem">
-          <p>
-            My core responsibility was supporting daily UX writing requests: screens, flows, labels, system messages, error states, and in-app communication across multiple product teams.
-          </p>
-
-          <p>
-            Moving between teams taught me something quickly. I couldn’t treat a single string in isolation. Every piece of copy had to fit the surrounding flow, match the product’s language, and stay clear for real users under real conditions — often riders checking their eBike mid-route, not sitting at a desk.
-          </p>
-
-          <div className="mt-8 space-y-3">
-            <FocusItem number="1" title="Create" text="Draft copy for new screens, flows, and interaction states across product teams." />
-            <FocusItem number="2" title="Revise" text="Improve existing copy based on usability needs, stakeholder feedback, and implementation constraints." />
-            <FocusItem number="3" title="Align" text="Keep terminology and tone consistent across different teams, product areas, and app surfaces." />
-          </div>
-
-          <p>
-            I recreated anonymized examples to show how I evaluated, revised, and sometimes deliberately preserved copy based on clarity, context, and what a user actually needs to understand at that moment.
-          </p>
-
-          <Artifact title="Product Copy Examples">
-            <img
-              src="/bosch/copyexample.png"
-              alt="Anonymized product copy examples showing UX writing decisions for clarity, context, and user understanding"
-            />
-          </Artifact>
-
-          <Callout>
-            Good UX writing doesn’t come from finding the perfect sentence. It comes from keeping language coherent across a product that dozens of people are building at once.
-          </Callout>
-        </CaseStep>
-
-        <BigStatement>
-          The more I worked inside the product, the more I could see that individual fixes weren’t enough. The underlying content had never been audited.
-        </BigStatement>
-
-        <CaseStep number="3" label="Accessibility Audit" title="400+ strings. One consistent finding.">
-          <p>
-            I proposed and ran an accessibility-focused content audit across more than 400 UI strings in Crowdin. The scope was accessibility — but what I found went beyond it.
-          </p>
-
-          <p>
-            The most consistent problem was error messages. When something went wrong, the product usually told users that it had. But it rarely told them what had happened, why, or what to do next. Users were left to guess. In a B2B product used by people under time pressure — service technicians, fleet managers, workshop staff — that’s not a minor inconvenience. It erodes confidence in the whole system.
-          </p>
-
-          <div className="mt-8 space-y-3">
-            <FocusItem number="1" title="Frame" text="Define scope, research questions, and evaluation criteria before touching a single string." />
-            <FocusItem number="2" title="Audit" text="Review 400+ Crowdin strings against accessibility writing principles, documenting issue type and severity for each." />
-            <FocusItem number="3" title="Prioritize" text="Categorize findings, request missing screen context, and organize issues by user impact — not just technical severity." />
-          </div>
-
-          <Artifact title="Accessibility Writing Audit">
-            <img
-              src="/bosch/accessibility.png"
-              alt="Accessibility writing audit showing issue categories, prioritization, and sample audit structure"
-            />
-          </Artifact>
-
-          <Callout>
-            The audit didn’t just surface bad copy. It showed how much product language can accumulate unexamined — and what it costs users when no one is responsible for reviewing it.
-          </Callout>
-        </CaseStep>
-
-        <CaseStep number="4" label="Terminology" title="Same product, different words — depending on who built it">
-          <p>
-            Alongside the audit, I worked on terminology consistency across the app ecosystem. Because different teams had built different parts of the product, the same concept was often named differently depending on where you were in the flow. For users moving between screens, this created a quiet kind of confusion — hard to name, easy to feel.
-          </p>
-
-          <p>
-            I worked to align language across teams and contributed to a shared terminology reference that could be used as the product continued to grow.
-          </p>
-        </CaseStep>
-
-        <BigStatement>
-          At some point I realized: we could fix individual strings, but we had no way to know if the language we were writing was actually working.
-        </BigStatement>
-
-        <CaseStep number="5" label="Research Framework" title="I noticed a gap nobody had closed. So I closed it.">
-          <p>
-            Task completion and language comprehension are not the same thing. A user can complete a flow and still misunderstand what just happened. We were measuring one. Not the other.
-          </p>
-
-          <p>
-            I contacted the UX research team and proposed a dedicated framework for evaluating UX writing. This wasn’t a task I’d been given. It was a gap I’d identified over months of working inside the product, and I made the case for closing it.
-          </p>
-
-          <p>
-            I designed the full research structure from scratch: what “content clarity” actually means to measure, which flows to test, how to write interview questions that surface interpretation rather than just behavior, and how to analyze what we found. The framework was approved and handed to the research team to run.
-          </p>
-
-          <div className="mt-8 space-y-3">
-            <FocusItem number="1" title="Define" text="Establish what we’re measuring — not task success, but whether users understand what the product is communicating at each step." />
-            <FocusItem number="2" title="Plan" text="Select high-friction flows. Write questions that reveal how users interpret copy, not just whether they can proceed." />
-            <FocusItem number="3" title="Analyze" text="Look for hesitation, false confidence, and moments where users complete a step but misunderstand what just happened — things standard usability tests miss." />
-          </div>
-
-          <Artifact title="UX Writing Research Framework">
-            <img
-              src="/bosch/boschresearch.png"
-              alt="UX writing research framework showing research goals, evaluation dimensions, methods, tested flows, and key insight"
-            />
-          </Artifact>
-
-          <Callout>
-            Getting the framework approved meant the work wouldn’t stop when I moved on. Someone else could pick it up, run it, and keep asking whether the language was working.
-          </Callout>
-        </CaseStep>
-
-        <CaseStep number="6" label="Reality" title="None of this happened in isolation">
-          <p>
-            These initiatives ran alongside my regular work, not instead of it. While I was building the research framework and running the audit, I was still writing and revising daily copy requests, responding to feedback from multiple teams, and keeping language aligned across product surfaces.
-          </p>
-
-          <p>
-            That’s what real product work looks like in a large organization. Not one clean project after another — layered work, where execution and initiative happen in parallel.
-          </p>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            <Stat number="100+" label="Screens and flows touched through daily UX writing work" />
-            <Stat number="400+" label="Crowdin strings reviewed in the accessibility audit" />
-            <Stat number="3" label="Writing surfaces supported: app, web portal, and internal newsletter" />
-          </div>
-        </CaseStep>
-
-        <ReflectionCard
-          title="What started as a copywriting brief became something closer to a content strategy practice."
-          text="The strings I rewrote are live. The audit findings are documented. The research framework is in the hands of the research team. I’m still there — and the work is still going. That’s the point: building things that don’t stop when you step away."
-        />
-
-        <div className="mt-10">
-          <BackHome />
-        </div>
-      </div>
-    </main>
-  );
-}
-
-/* =========================
-   PLACEHOLDER
-========================= */
-
-function Placeholder({ title }) {
-  return (
-    <main id="main-content" tabIndex={-1} className="min-h-screen bg-base text-text outline-none">
-      <Navbar />
-
-      <div className="mx-auto max-w-6xl px-6 py-24 md:px-10">
-        <p className="mb-6 text-sm uppercase tracking-[0.25em] text-muted">
-          UX Case Study
-        </p>
-
-        <h1 className="max-w-4xl text-5xl font-medium leading-tight md:text-7xl">
-          {title}
-        </h1>
-
-        <p className="mt-8 max-w-2xl text-xl leading-9 text-muted">
-          This is a placeholder project page. Later, we’ll replace this with your full case study content.
-        </p>
-
-        <BackHome />
-      </div>
-    </main>
-  );
-}
-
-/* =========================
-   SHARED COMPONENTS
-========================= */
-
-function CaseHero({ label, title, subtitle, chips }) {
-  return (
-    <section className="relative overflow-hidden rounded-[3rem] border border-text/10 bg-card/75 p-8 shadow-[0_24px_90px_rgba(30,27,24,0.08)] backdrop-blur md:p-14">
-      <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-16 h-72 w-72 rounded-full bg-soft/70 blur-3xl" />
-      <div aria-hidden="true" className="pointer-events-none absolute bottom-0 left-0 h-64 w-64 rounded-full bg-accent/35 blur-3xl" />
-      <div className="relative">
-        <SectionLabel>{label}</SectionLabel>
-
-        <h1 className="mt-7 max-w-5xl text-5xl font-medium leading-[1.02] tracking-tight md:text-7xl">
-          {title}
-        </h1>
-
-        <p className="mt-7 max-w-3xl text-lg leading-8 text-muted md:text-xl">
-          {subtitle}
-        </p>
-
-        <div className="mt-8 flex flex-wrap gap-2">
-          {chips.map((chip) => (
-            <Chip key={chip}>{chip}</Chip>
+      <Reveal delay={STAGGER * 3} immediate className="col-span-full pb-8">
+        <ul className="ticker" aria-label="Core strengths">
+          {strengths.map((word) => (
+            <li key={word}>{word}</li>
           ))}
-        </div>
+        </ul>
+      </Reveal>
+    </section>
+  );
+}
+
+function RecruiterBar() {
+  const items = [
+    ["Experience", "4+ years across UX, UI, research, and writing"],
+    ["Education", "M.Sc. HCI in progress, B.Sc. Psychology"],
+    ["Strength", "B2B systems, content clarity, accessibility"],
+    ["Availability", "Open to Product Designer / UX Designer roles in Germany"],
+  ];
+
+  return (
+    <section className="border-y-2 border-[var(--ink)] bg-[var(--mist)]" aria-label="Profile at a glance">
+      <dl className="mx-auto grid max-w-7xl gap-6 px-4 py-6 md:grid-cols-4 md:gap-8 md:px-8 md:py-8">
+        {items.map(([title, text]) => (
+          <div key={title}>
+            <dt className="text-xs font-extrabold uppercase tracking-[0.14em] text-[var(--muted)]">{title}</dt>
+            <dd className="mt-2 font-semibold leading-6">{text}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  );
+}
+
+function Projects() {
+  return (
+    <section id="projects" className="section-grid scroll-mt-24 py-20 md:py-28">
+      <Reveal className="col-span-full max-w-4xl">
+        <p className="label">Selected work</p>
+        <h2 className="section-title">Enterprise UX, UX writing, and B2B product design.</h2>
+        <p className="section-copy">
+          An enterprise content system at Bosch eBike Systems, a reorder-first B2B app, and a dairy ordering workflow — each case study covers the problem, the decisions, and what changed.
+        </p>
+      </Reveal>
+
+      <div className="col-span-full mt-12 grid gap-6">
+        {projects.map((project) => (
+          <ProjectCard key={project.slug} project={project} />
+        ))}
       </div>
     </section>
   );
 }
 
-function Chip({ children }) {
+function ProjectCard({ project }) {
+  const reduce = useReducedMotion();
+  const facts = [
+    ["Role", project.role],
+    ["Industry", project.industry],
+    ["Duration", project.duration],
+  ].filter(([, value]) => value);
+
   return (
-    <span className="rounded-full border border-text/10 bg-card/80 px-3 py-1.5 text-xs font-medium text-muted shadow-sm transition hover:border-primary/25 hover:text-text motion-reduce:transition-none">
-      {children}
-    </span>
+    <m.article
+      initial={{ opacity: 0, y: reduce ? 0 : ELEMENT_MOTION.distance }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={VIEWPORT}
+      transition={{ duration: reduce ? 0.01 : ELEMENT_MOTION.duration, ease: EASE_OUT }}
+    >
+      <Link
+        to={project.href}
+        aria-label={`${project.title} case study`}
+        className={`project-card group ${project.featured ? "project-card-featured" : ""}`}
+      >
+        <div className="project-media">
+          <img
+            src={project.image}
+            alt=""
+            loading={project.featured ? "eager" : "lazy"}
+            width="960"
+            height="720"
+            style={project.imagePosition ? { objectPosition: project.imagePosition } : undefined}
+          />
+        </div>
+        <div className="project-body">
+          <div>
+            <p className="label">{project.eyebrow}</p>
+            <h3>{project.title}</h3>
+          </div>
+          <dl className="project-facts">
+            {facts.map(([term, value]) => (
+              <div key={term}>
+                <dt>{term}</dt>
+                <dd>{value}</dd>
+              </div>
+            ))}
+          </dl>
+          {project.metrics?.length > 0 && (
+            <ul className="project-metrics" aria-label="Impact">
+              {project.metrics.map((metric) => (
+                <li key={metric.label}>
+                  <strong>{metric.value}</strong>
+                  <span>{metric.label}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          <div className="flex flex-wrap gap-2">
+            {project.tags.map((tag) => (
+              <span className="tag" key={tag}>{tag}</span>
+            ))}
+          </div>
+          <p className="project-problem">{project.problem}</p>
+          <span className="case-link">
+            Open case study <ArrowRight size={17} />
+          </span>
+        </div>
+      </Link>
+    </m.article>
   );
 }
 
-function CaseSection({ title, children }) {
+function Philosophy() {
   return (
-    <Reveal className="py-10 md:py-14">
-      <section className="rounded-[2.25rem] border border-text/10 bg-card/70 p-7 shadow-sm backdrop-blur md:p-10">
-        <h2 className="mb-6 max-w-4xl text-4xl font-medium leading-tight md:text-5xl">{title}</h2>
-        <div className="space-y-5 text-lg leading-8 text-muted">
-          {children}
-        </div>
-      </section>
+    <section id="philosophy" className="section-grid scroll-mt-24 border-y-2 border-[var(--ink)] bg-[var(--ink)] py-20 text-[var(--paper)] md:py-28">
+      <Reveal className="col-span-full max-w-4xl">
+        <p className="label label-on-dark">Design philosophy</p>
+        <h2 className="section-title">I make design decisions by connecting user evidence, product constraints, and implementation reality.</h2>
+      </Reveal>
+      <div className="col-span-full mt-12 grid gap-px bg-[var(--paper)]/25 md:grid-cols-3">
+        {philosophy.map((item, index) => (
+          <PhilosophyCard key={item.title} item={item} index={index} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function PhilosophyCard({ item, index }) {
+  const Icon = item.icon;
+
+  return (
+    <Reveal className="bg-[var(--ink)] p-7 md:p-8">
+      <div className="mb-8 flex items-center justify-between">
+        <span className="flex h-12 w-12 items-center justify-center border-2 border-[var(--paper)] bg-[var(--accent)] text-[var(--ink)] shadow-[4px_4px_0_var(--paper)]">
+          <Icon size={22} />
+        </span>
+        <span className="text-5xl font-extrabold text-[var(--paper)]/20" aria-hidden="true">0{index + 1}</span>
+      </div>
+      <h3 className="text-2xl font-extrabold uppercase leading-7">{item.title}</h3>
+      <p className="mt-4 leading-7 text-[var(--paper)]/72">{item.text}</p>
+      {item.proof && <p className="philosophy-proof">{item.proof}</p>}
+      {item.link && (
+        <Link className="proof-link" to={item.link.to}>
+          {item.link.label} <ArrowRight size={15} />
+        </Link>
+      )}
     </Reveal>
   );
 }
 
-function CaseStep({ number, label, title, children }) {
+function About() {
   return (
-    <Reveal className="py-10 md:py-14">
-      <section className="grid gap-8 rounded-[2.25rem] border border-text/10 bg-card/70 p-7 shadow-sm backdrop-blur md:grid-cols-[220px_1fr] md:p-10">
-        <div className="flex items-center gap-3 self-start text-sm text-muted md:sticky md:top-28">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-text text-xs font-bold text-white">
-            {number}
-          </span>
-          <span className="font-bold uppercase tracking-[0.2em]">{label}</span>
-        </div>
-
+    <section id="about" className="section-grid scroll-mt-24 py-20 md:py-28">
+      <Reveal className="col-span-full grid gap-10 lg:grid-cols-[0.72fr_1.28fr]">
         <div>
-          <h2 className="max-w-3xl text-3xl font-medium leading-snug md:text-5xl">
-            {title}
-          </h2>
+          <p className="label">About</p>
+          <h2 className="section-title">I notice where products make people work too hard.</h2>
+        </div>
+        <div className="max-w-[65ch] space-y-6 text-lg leading-8 text-[var(--muted)]">
+          <p>
+            I studied psychology before UX, so I design for the moments where people hesitate — expectation, trust, and the small signals that tell a user whether a product understood them.
+          </p>
+          <p>
+            Day to day at Bosch eBike Systems (alongside an M.Sc. in Human-Computer Interaction), that looks like practical collaboration: writing states and edge cases down before handoff, checking copy and design against implementation constraints, and treating engineers as design partners rather than a delivery step. I would rather adjust a design so it ships coherently than defend a mockup.
+          </p>
+          <p>
+            I am drawn to B2B workflows — confirmation screens, ordering systems, error messages — because that is where a product proves it respects the user's time. My case studies share one habit: change direction when the evidence says so, and leave things alone when a rewrite would cost more than it clarifies.
+          </p>
+          <ul className="grid gap-3 sm:grid-cols-2" aria-label="Core skills">
+            {["Research synthesis", "Interaction design", "UX writing", "Accessibility", "Figma prototypes", "Developer collaboration"].map((skill) => (
+              <li className="skill-row" key={skill}><Check size={17} aria-hidden="true" /> {skill}</li>
+            ))}
+          </ul>
+        </div>
+      </Reveal>
+    </section>
+  );
+}
 
-          <div className="mt-7 max-w-3xl space-y-4 leading-8 text-muted">
-            {children}
+function Contact() {
+  return (
+    <section id="contact" className="section-grid scroll-mt-24 pb-10 md:pb-16">
+      <Reveal className="col-span-full">
+        <div className="contact-band">
+          <div>
+            <p className="label label-on-dark">Contact</p>
+            <h2>Tell me about your product.</h2>
+            <p>
+              I am open to Product Designer and UX Designer roles in Germany. One sentence about your team and the workflow your users struggle with is enough to start — I will come back with questions, not a portfolio dump.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3 lg:justify-end">
+            <a
+              className="button button-light"
+              href="mailto:arezoosaeidish@gmail.com?subject=Product%20Designer%20role%20%E2%80%94%20let%27s%20talk"
+            >
+              Start the conversation <Mail size={17} />
+            </a>
+            <a
+              className="button button-outline-dark"
+              href="https://www.linkedin.com/in/arezoo-saeidisharifabad-433b911a9/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              LinkedIn <span className="sr-only">(opens in new tab)</span> <ExternalLink size={17} aria-hidden="true" />
+            </a>
+            <a
+              className="button button-outline-dark"
+              href="mailto:arezoosaeidish@gmail.com?subject=Resume%20request"
+            >
+              Request resume <FileText size={17} />
+            </a>
           </div>
         </div>
+      </Reveal>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 pb-8 text-sm text-[var(--muted)] md:px-8">
+      <span>Arezoo Saeidisharifabad — Product Designer / UX Designer, Germany</span>
+      <a className="footer-link" href="mailto:arezoosaeidish@gmail.com">
+        arezoosaeidish@gmail.com
+      </a>
+    </footer>
+  );
+}
+
+function CaseStudy({ id }) {
+  const study = caseStudies[id];
+  const ids = Object.keys(caseStudies);
+  const nextId = ids[(ids.indexOf(id) + 1) % ids.length];
+  const nextProject = projects.find((project) => project.slug === nextId);
+  const currentProject = projects.find((project) => project.slug === id);
+
+  useEffect(() => {
+    if (!study) return;
+    const previous = document.title;
+    document.title = `${currentProject?.title ?? study.title} | Arezoo Saeidisharifabad`;
+    return () => {
+      document.title = previous;
+    };
+  }, [study, currentProject]);
+
+  useRouteMeta({
+    title: study ? `${currentProject?.title ?? study.title} | Arezoo Saeidisharifabad` : "",
+    description: study?.subtitle ?? "",
+  });
+
+  if (!study) return <Home />;
+
+  return (
+    <>
+      <Navbar />
+      <main id="main-content" tabIndex={-1} className="bg-[var(--paper)] text-[var(--ink)] outline-none">
+        <article>
+          <CaseHero study={study} />
+          <CaseOutcome items={study.outcome} />
+          <CaseNarrative items={study.narrative} />
+          <CaseReflection text={study.reflection} />
+        </article>
+        <nav
+          aria-label="Case study navigation"
+          className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 pb-16 md:px-8"
+        >
+          <Link className="button button-light" to="/#projects">
+            <ArrowLeft size={17} aria-hidden="true" /> All work
+          </Link>
+          {nextProject && (
+            <Link className="button button-dark" to={`/projects/${nextId}`}>
+              Next: {nextProject.title} <ArrowRight size={17} aria-hidden="true" />
+            </Link>
+          )}
+        </nav>
+      </main>
+    </>
+  );
+}
+
+function CaseHero({ study }) {
+  return (
+    <section className="section-grid pt-28 md:pt-36">
+      <div className="col-span-full grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+        <Reveal className="pb-8">
+          <p className="label">{study.label}</p>
+          <h1 className="mt-6 max-w-5xl text-[clamp(2.8rem,7vw,6.2rem)] font-extrabold uppercase leading-[0.95]">
+            {study.title}
+          </h1>
+          <p className="mt-7 max-w-3xl text-xl leading-8 text-[var(--muted)]">{study.subtitle}</p>
+        </Reveal>
+        <Reveal delay={STAGGER}>
+          <div className="case-cover" aria-hidden="true">
+            <img src={study.cover} alt="" width="960" height="720" />
+          </div>
+        </Reveal>
+      </div>
+      <Reveal className="col-span-full pb-8">
+        <dl className="case-meta">
+          {study.meta.map(([term, description]) => (
+            <div key={term}>
+              <dt>{term}</dt>
+              <dd>{description}</dd>
+            </div>
+          ))}
+        </dl>
+      </Reveal>
+    </section>
+  );
+}
+
+function CaseOutcome({ items }) {
+  return (
+    <section className="border-y-2 border-[var(--ink)] bg-[var(--accent)]">
+      <h2 className="sr-only">Impact</h2>
+      <div className="mx-auto grid max-w-7xl gap-px bg-[var(--ink)] md:grid-cols-3">
+        {items.map((item) => {
+          const isNumeric = /\d/.test(item.value);
+          return (
+            <Reveal key={item.label} className="bg-[var(--accent)] p-6 md:p-8">
+              <p
+                className={`flex min-h-[1.875rem] items-end font-extrabold leading-none md:min-h-[2.25rem] ${
+                  isNumeric ? "text-3xl md:text-4xl" : "text-xl md:text-2xl"
+                }`}
+              >
+                {item.value}
+              </p>
+              <p className="mt-2 text-xs font-extrabold uppercase tracking-[0.14em]">{item.label}</p>
+              <p className="mt-3 text-sm font-semibold leading-6">{item.detail}</p>
+            </Reveal>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function CaseNarrative({ items }) {
+  return (
+    <section className="mx-auto max-w-7xl px-4 py-20 md:px-8 md:py-28">
+      <div className="grid gap-14">
+        {items.map((item, index) => (
+          <CaseChapter key={`${item.label}-${item.title}`} chapter={item} number={index + 1} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function CaseChapter({ chapter, number }) {
+  return (
+    <Reveal>
+      <section className="case-chapter">
+        <div className="case-chapter-index">
+          <span>0{number}</span>
+          <p>{chapter.label}</p>
+        </div>
+        <div>
+          <h2>{chapter.title}</h2>
+          <div className="mt-6 max-w-[65ch] space-y-4 text-lg leading-8 text-[var(--muted)]">
+            {chapter.body.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+          {chapter.decisionMap && (
+            <div className="decision-map">
+              {chapter.decisionMap.map((row) => (
+                <div className="decision-row" key={row.insight}>
+                  <div className="decision-insight">
+                    <span>Insight</span>
+                    <p>{row.insight}</p>
+                  </div>
+                  <ArrowRight className="decision-arrow" size={18} aria-hidden="true" />
+                  <div className="decision-choice">
+                    <span>Decision</span>
+                    <p>{row.decision}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          {chapter.quote && <PullQuote>{chapter.quote}</PullQuote>}
+          {chapter.artifact && <Artifact artifact={chapter.artifact} />}
+          {chapter.artifactPair && <ArtifactPair items={chapter.artifactPair} />}
+          {chapter.compare && <CompareGallery items={chapter.compare} />}
+        </div>
       </section>
     </Reveal>
   );
 }
 
-function Quote({ children }) {
+function Artifact({ artifact }) {
   return (
-    <div className="my-10 rounded-[2rem] border border-primary/20 bg-primary/10 p-7 text-xl font-medium italic leading-8 text-text shadow-sm">
-      {children}
+    <ExpandableImage
+      title={artifact.title}
+      label={artifact.label}
+      image={artifact.image}
+      alt={artifact.alt}
+      caption={artifact.caption}
+    />
+  );
+}
+
+function ArtifactPair({ items }) {
+  return (
+    <div className="mt-10 grid gap-5 md:grid-cols-2">
+      {items.map((item) => (
+        <ExpandableImage key={item.title} title={item.title} label="Flow" image={item.image} alt={item.alt} />
+      ))}
     </div>
   );
 }
 
-function Callout({ children }) {
+function CompareGallery({ items }) {
   return (
-    <div className="my-8 rounded-[2rem] border border-primary/20 bg-primary/10 p-6 text-text shadow-sm">
-      {children}
+    <div className="mt-10 grid gap-5">
+      {items.map((item) => (
+        <div className="comparison" key={item.title}>
+          <h3>{item.title}</h3>
+          <div className="grid gap-4 md:grid-cols-[1fr_auto_1fr] md:items-center">
+            <ExpandableImage title={`${item.title} before`} label="Before" image={item.before} alt={`${item.title} before redesign`} compact />
+            <ArrowRight className="hidden md:block" aria-hidden="true" />
+            <ExpandableImage title={`${item.title} after`} label="After" image={item.after} alt={`${item.title} after redesign`} compact />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
 
-function FocusItem({ number, title, text }) {
-  return (
-    <div className="grid grid-cols-[44px_1fr] gap-4 rounded-[1.5rem] border border-text/10 bg-card p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0">
-      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 font-serif text-xl text-primary">{number}</span>
-      <div>
-        <h3 className="font-semibold text-text">{title}</h3>
-        <p className="mt-2 text-sm leading-7 text-muted">{text}</p>
-      </div>
-    </div>
-  );
+function PullQuote({ children }) {
+  return <blockquote className="pull-quote">{children}</blockquote>;
 }
 
-function CompareBox({ type, title, items }) {
-  const isOld = type === "old";
-
-  return (
-    <div
-      className={`rounded-[2rem] border p-6 shadow-sm ${
-        isOld
-          ? "border-text/10 bg-card"
-          : "border-primary/20 bg-primary/10"
-      }`}
-    >
-      <h3
-        className={`mb-4 text-xs font-medium uppercase tracking-[0.2em] ${
-          isOld ? "text-muted" : "text-primary"
-        }`}
-      >
-        {title}
-      </h3>
-
-      <ul className="list-disc space-y-2 pl-5 text-sm leading-6 text-muted">
-        {items.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function getFocusableElements(container) {
-  if (!container) return [];
-
-  return Array.from(
-    container.querySelectorAll(
-      'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
-    )
-  );
-}
-
-function Artifact({ title, label, children }) {
-  const [isOpen, setIsOpen] = useState(false);
+function ExpandableImage({ title, label, image, alt, caption, compact = false }) {
+  const [open, setOpen] = useState(false);
   const titleId = useId();
   const triggerRef = useRef(null);
   const closeRef = useRef(null);
-  const modalRef = useRef(null);
-
-  const closeModal = () => {
-    setIsOpen(false);
-    requestAnimationFrame(() => {
-      triggerRef.current?.focus();
-    });
-  };
 
   useEffect(() => {
-    if (!isOpen) return;
-
+    if (!open) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    requestAnimationFrame(() => closeRef.current?.focus());
 
-    requestAnimationFrame(() => {
-      closeRef.current?.focus();
-    });
-
-    function handleKeyDown(event) {
+    function onKeyDown(event) {
       if (event.key === "Escape") {
-        closeModal();
-        return;
+        setOpen(false);
+        requestAnimationFrame(() => triggerRef.current?.focus());
       }
-
-      if (event.key !== "Tab") return;
-
-      const focusableElements = getFocusableElements(modalRef.current);
-      if (!focusableElements.length) return;
-
-      const firstElement = focusableElements[0];
-      const lastElement = focusableElements[focusableElements.length - 1];
-
-      if (event.shiftKey && document.activeElement === firstElement) {
+      if (event.key === "Tab") {
+        // The close button is the dialog's only focusable control — keep focus on it.
         event.preventDefault();
-        lastElement.focus();
-      } else if (!event.shiftKey && document.activeElement === lastElement) {
-        event.preventDefault();
-        firstElement.focus();
+        closeRef.current?.focus();
       }
     }
 
-    document.addEventListener("keydown", handleKeyDown);
-
+    document.addEventListener("keydown", onKeyDown);
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onKeyDown);
     };
-  }, [isOpen]);
-
-  const modal =
-    isOpen &&
-    createPortal(
-      <div
-        ref={modalRef}
-        className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/85 p-6 backdrop-blur-sm"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        onClick={closeModal}
-      >
-        <button
-          ref={closeRef}
-          type="button"
-          onClick={closeModal}
-          aria-label="Close expanded image"
-          className="fixed right-6 top-6 z-[100000] rounded-full bg-white px-4 py-2 text-sm font-medium text-black shadow-lg outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-        >
-          Close
-        </button>
-
-        <div
-          className="max-h-[90vh] max-w-[94vw] overflow-auto rounded-[2rem] bg-base p-4 shadow-2xl md:p-6
-          [&_img]:mx-auto [&_img]:h-auto [&_img]:max-h-none [&_img]:w-auto [&_img]:max-w-full [&_img]:rounded-[1.5rem]"
-          onClick={(event) => event.stopPropagation()}
-        >
-          <h2 id={titleId} className="sr-only">
-            {title}
-          </h2>
-          {children}
-        </div>
-      </div>,
-      document.body
-    );
+  }, [open]);
 
   return (
-    <div className="my-10">
-      <div className="flex justify-between gap-4 text-xs font-bold uppercase tracking-[0.15em] text-muted">
-        <span>{title}</span>
-        <span>{label}</span>
-      </div>
-
+    <>
       <button
         ref={triggerRef}
+        className={`artifact ${compact ? "artifact-compact" : ""}`}
         type="button"
-        onClick={() => setIsOpen(true)}
-        className="group mt-3 w-full overflow-hidden rounded-[2rem] border border-text/10 bg-card p-5 text-center text-muted shadow-[0_18px_60px_rgba(30,27,24,0.07)] outline-none transition hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(30,27,24,0.12)] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-base motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:p-8
-        [&_img]:mx-auto [&_img]:max-h-[720px] [&_img]:rounded-[1.5rem] [&_img]:object-contain [&_img]:shadow-sm"
-        aria-label={`Expand ${title}`}
+        onClick={() => setOpen(true)}
+        aria-label={`Open ${title}`}
       >
-        {children}
-
-        <span className="mt-4 block text-xs font-medium uppercase tracking-[0.15em] opacity-70 md:opacity-0 md:transition md:group-hover:opacity-70 md:group-focus-visible:opacity-70">
-          Click to expand
+        <span className="artifact-head">
+          <strong>{title}</strong>
+          <em>{label}</em>
         </span>
+        <img src={image} alt={alt} loading="lazy" width="960" height="720" />
+        {caption && <span className="artifact-caption">{caption}</span>}
+        <span className="artifact-action">Click to expand</span>
       </button>
 
-      {modal}
-    </div>
-  );
-}
-
-function BeforeAfterGallery({ title, label, items }) {
-  const [openIndex, setOpenIndex] = useState(null);
-  const isOpen = openIndex !== null;
-  const titleId = useId();
-  const triggerRefs = useRef([]);
-  const closeRef = useRef(null);
-  const modalRef = useRef(null);
-
-  const close = () => {
-    const previousIndex = openIndex;
-    setOpenIndex(null);
-    requestAnimationFrame(() => {
-      if (previousIndex !== null) triggerRefs.current[previousIndex]?.focus();
-    });
-  };
-
-  const next = () => setOpenIndex((i) => (i + 1) % items.length);
-  const prev = () => setOpenIndex((i) => (i - 1 + items.length) % items.length);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    requestAnimationFrame(() => {
-      closeRef.current?.focus();
-    });
-
-    function handleKeyDown(e) {
-      if (e.key === "Escape") {
-        close();
-        return;
-      }
-
-      if (e.key === "ArrowRight") next();
-      if (e.key === "ArrowLeft") prev();
-
-      if (e.key !== "Tab") return;
-
-      const focusableElements = getFocusableElements(modalRef.current);
-      if (!focusableElements.length) return;
-
-      const firstElement = focusableElements[0];
-      const lastElement = focusableElements[focusableElements.length - 1];
-
-      if (e.shiftKey && document.activeElement === firstElement) {
-        e.preventDefault();
-        lastElement.focus();
-      } else if (!e.shiftKey && document.activeElement === lastElement) {
-        e.preventDefault();
-        firstElement.focus();
-      }
-    }
-
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [isOpen, openIndex]);
-
-  return (
-    <div className="my-10">
-      <div className="flex justify-between gap-4 text-xs font-bold uppercase tracking-[0.15em] text-muted">
-        <span>{title}</span>
-        <span>{label}</span>
-      </div>
-
-      <div className="mt-3 space-y-8 rounded-[2rem] border border-text/10 bg-card p-5 shadow-[0_18px_60px_rgba(30,27,24,0.07)] md:p-8">
-        {items.map((item, index) => (
-          <button
-            key={item.title}
-            ref={(element) => {
-              triggerRefs.current[index] = element;
-            }}
-            type="button"
-            onClick={() => setOpenIndex(index)}
-            className="block w-full rounded-[1.5rem] border border-text/10 bg-base/60 p-5 text-left outline-none transition hover:-translate-y-1 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-base motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-            aria-label={`Expand ${item.title} before and after comparison`}
-          >
-            <h4 className="mb-4 text-lg font-semibold text-text">
-              {item.title}
-            </h4>
-
-            <div className="grid gap-5 md:grid-cols-[1fr_auto_1fr] md:items-center">
-              <div>
-                <p className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-muted">
-                  Before
-                </p>
-                <img src={item.before} alt={`${item.title} before redesign showing the older Chenaran interface`} className="w-full rounded-xl" />
-              </div>
-
-              <div aria-hidden="true" className="hidden text-2xl text-muted md:block">→</div>
-
-              <div>
-                <p className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-muted">
-                  After
-                </p>
-                <img src={item.after} alt={`${item.title} after redesign showing the improved Chenaran interface`} className="w-full rounded-xl" />
-              </div>
-            </div>
-
-            <p className="mt-4 text-sm text-muted">{item.caption}</p>
-          </button>
-        ))}
-      </div>
-
-      {isOpen &&
+      {open &&
         createPortal(
           <div
-            ref={modalRef}
-            className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/85 p-6 backdrop-blur-sm"
+            className="modal"
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
-            onClick={close}
+            onClick={() => {
+              setOpen(false);
+              requestAnimationFrame(() => triggerRef.current?.focus());
+            }}
           >
             <button
               ref={closeRef}
+              className="button button-light modal-close"
               type="button"
-              onClick={close}
-              aria-label="Close before and after gallery"
-              className="fixed right-6 top-6 z-[100000] rounded-full bg-white px-4 py-2 text-sm font-medium text-black outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-            >
-              Close
-            </button>
-
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                prev();
+              onClick={(event) => {
+                event.stopPropagation();
+                setOpen(false);
+                requestAnimationFrame(() => triggerRef.current?.focus());
               }}
-              aria-label="Show previous comparison"
-              className="fixed left-6 top-1/2 z-[100000] rounded-full bg-white px-4 py-3 text-black outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             >
-              ←
+              Close <X size={16} />
             </button>
-
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                next();
-              }}
-              aria-label="Show next comparison"
-              className="fixed right-6 top-1/2 z-[100000] rounded-full bg-white px-4 py-3 text-black outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-            >
-              →
-            </button>
-
-            <div
-              className="max-h-[92vh] max-w-[94vw] overflow-auto rounded-[2rem] bg-base p-5 shadow-2xl md:p-8"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h2 id={titleId} className="mb-4 text-center text-xs font-bold uppercase tracking-[0.15em] text-muted">
-                {openIndex + 1} / {items.length} · {items[openIndex].title}
-              </h2>
-
-              <div className="grid gap-6 md:grid-cols-[1fr_auto_1fr] md:items-start">
-                <div>
-                  <p className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-muted">
-                    Before
-                  </p>
-                  <img
-                    src={items[openIndex].before}
-                    alt={`${items[openIndex].title} before redesign showing the older Chenaran interface`}
-                    className="max-h-[75vh] w-auto rounded-[1.5rem]"
-                  />
-                </div>
-
-                <div aria-hidden="true" className="hidden pt-24 text-3xl text-muted md:block">→</div>
-
-                <div>
-                  <p className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-muted">
-                    After
-                  </p>
-                  <img
-                    src={items[openIndex].after}
-                    alt={`${items[openIndex].title} after redesign showing the improved Chenaran interface`}
-                    className="max-h-[75vh] w-auto rounded-[1.5rem]"
-                  />
-                </div>
-              </div>
-
-              <p className="mt-5 text-center text-sm text-muted">
-                {items[openIndex].caption}
-              </p>
+            <div className="modal-image" onClick={(event) => event.stopPropagation()}>
+              <h2 id={titleId}>{title}</h2>
+              <img src={image} alt={alt} />
             </div>
           </div>,
           document.body
         )}
-    </div>
+    </>
   );
 }
 
-function Stat({ number, label, description }) {
+function CaseReflection({ text }) {
   return (
-    <div className="rounded-[2rem] border border-text/10 bg-card p-6 text-center shadow-sm">
-      <span className="text-4xl font-medium text-primary">{number}</span>
-      <p className="mt-2 text-sm leading-6 text-muted">{label}</p>
-      {description && <p className="mt-2 text-xs leading-5 text-muted">{description}</p>}
-    </div>
+    <section className="section-grid pb-16">
+      <Reveal className="col-span-full">
+        <div className="reflection">
+          <p className="label">Reflection</p>
+          <p className="reflection-text">{text}</p>
+        </div>
+      </Reveal>
+    </section>
   );
 }
 
-function Learning({ n, text }) {
+function Reveal({ children, className = "", delay = 0, immediate = false }) {
+  const reduce = useReducedMotion();
+  const visible = { opacity: 1, y: 0 };
+
   return (
-    <article className="rounded-[2rem] border border-text/10 bg-card p-6 shadow-sm">
-      <span className="text-sm text-primary">{n}</span>
-      <p className="mt-4 text-sm leading-7 text-muted">{text}</p>
-    </article>
-  );
-}
-
-function ReflectionCard({ title, text }) {
-  return (
-    <Reveal className="mt-16">
-      <div className="relative overflow-hidden rounded-[3rem] border border-primary/20 bg-primary/10 p-8 shadow-[0_22px_80px_rgba(30,27,24,0.08)] md:p-14">
-        <div aria-hidden="true" className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-soft/70 blur-3xl" />
-
-        <p className="relative text-sm font-bold uppercase tracking-[0.2em] text-primary/70">
-          Final reflection
-        </p>
-
-        <h2 className="relative mt-4 text-3xl font-medium md:text-4xl">
-          {title}
-        </h2>
-
-        <p className="relative mt-6 max-w-2xl text-lg leading-8 text-muted">
-          {text}
-        </p>
-      </div>
-    </Reveal>
-  );
-}
-
-function BigStatement({ children }) {
-  return (
-    <Reveal className="py-12 md:py-20">
-      <div className="mx-auto max-w-4xl text-center">
-        <p className="font-serif text-3xl italic leading-tight text-primary md:text-5xl">
-          {children}
-        </p>
-      </div>
-    </Reveal>
-  );
-}
-
-function BackHome() {
-  return (
-    <Link
-      to="/"
-      className="group inline-flex min-h-12 items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(109,93,251,0.25)] outline-none transition hover:-translate-y-0.5 hover:bg-text focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base motion-reduce:hover:translate-y-0"
+    <m.div
+      className={className}
+      initial={{ opacity: 0, y: reduce ? 0 : SECTION_MOTION.distance }}
+      animate={immediate ? visible : undefined}
+      whileInView={immediate ? undefined : visible}
+      viewport={immediate ? undefined : VIEWPORT}
+      transition={{
+        duration: reduce ? 0.01 : SECTION_MOTION.duration,
+        delay: reduce ? 0 : delay,
+        ease: EASE_OUT,
+      }}
     >
-      Back home <ArrowRight size={16} aria-hidden="true" className="transition group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
-    </Link>
+      {children}
+    </m.div>
   );
 }
 
