@@ -311,7 +311,7 @@ function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: reduce ? 0.01 : SECTION_MOTION.duration, ease: EASE_OUT }}
           >
-            I make complex B2B products clear.
+            Product design for complex systems.
           </m.h1>
           <Reveal delay={STAGGER} immediate>
             <p className="mt-7 max-w-2xl text-xl leading-8 text-[var(--muted)]">
