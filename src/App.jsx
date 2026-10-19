@@ -311,21 +311,19 @@ function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: reduce ? 0.01 : SECTION_MOTION.duration, ease: EASE_OUT }}
           >
-            Product design for complex systems.
+            Designing complex workflows around real human behavior.
           </m.h1>
           <Reveal delay={STAGGER} immediate>
             <p className="mt-7 max-w-2xl text-xl leading-8 text-[var(--muted)]">
-              UX Writing at Bosch eBike Systems, trained in psychology. I specialize in
-              enterprise UX, UX writing, and accessibility — the details that decide whether
-              people trust a workflow.
+              I’m a UX designer with a background in psychology and Human-Computer Interaction. I work across research, interaction design, and UX writing to make complex digital products clearer and easier to use.
             </p>
           </Reveal>
           <Reveal delay={STAGGER * 2} immediate className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
             <a className="button button-dark" href="#projects">
-              View case studies <ArrowRight size={17} />
+              Explore my work <ArrowRight size={17} />
             </a>
             <a className="case-link py-2" href="mailto:arezoosaeidish@gmail.com">
-              Contact me <Mail size={16} />
+              More about me <ArrowRight size={16} />
             </a>
           </Reveal>
         </div>
@@ -388,7 +386,7 @@ function Projects() {
         <p className="label">Selected work</p>
         <h2 className="section-title">Enterprise UX, UX writing, and B2B product design.</h2>
         <p className="section-copy">
-          An enterprise content system at Bosch eBike Systems, a reorder-first B2B app, and a dairy ordering workflow — each case study covers the problem, the decisions, and what changed.
+          From redesigning a mechanics’ ordering workflow to improving language and accessibility across an established product, these projects show how research can shape clearer interactions.
         </p>
       </Reveal>
 
@@ -514,14 +512,14 @@ function About() {
       <Reveal className="col-span-full grid gap-10 lg:grid-cols-[0.72fr_1.28fr]">
         <div>
           <p className="label">About</p>
-          <h2 className="section-title">I notice where products make people work too hard.</h2>
+          <h2 className="section-title">Psychology taught me to look beyond the interface.</h2>
         </div>
         <div className="max-w-[65ch] space-y-6 text-lg leading-8 text-[var(--muted)]">
           <p>
-            I studied psychology before UX, so I design for the moments where people hesitate — expectation, trust, and the small signals that tell a user whether a product understood them.
+            My background in psychology shaped how I approach design: by looking beyond the interface to understand the people, decisions, and constraints behind an interaction.
           </p>
           <p>
-            Day to day at Bosch eBike Systems (alongside an M.Sc. in Human-Computer Interaction), that looks like practical collaboration: writing states and edge cases down before handoff, checking copy and design against implementation constraints, and treating engineers as design partners rather than a delivery step. I would rather adjust a design so it ships coherently than defend a mockup.
+            Through HCI, B2B product design, UX research, and UX writing, I connect user needs with practical product requirements and translate findings into clearer digital experiences.
           </p>
           <p>
             I am drawn to B2B workflows — confirmation screens, ordering systems, error messages — because that is where a product proves it respects the user's time. My case studies share one habit: change direction when the evidence says so, and leave things alone when a rewrite would cost more than it clarifies.
@@ -544,9 +542,9 @@ function Contact() {
         <div className="contact-band">
           <div>
             <p className="label label-on-dark">Contact</p>
-            <h2>Tell me about your product.</h2>
+            <h2>Have a complex problem to make clearer?</h2>
             <p>
-              I am open to Product Designer and UX Designer roles in Germany. One sentence about your team and the workflow your users struggle with is enough to start — I will come back with questions, not a portfolio dump.
+              I’m interested in thoughtful product design, complex workflows, and digital experiences that help people work with greater confidence.
             </p>
           </div>
           <div className="flex flex-wrap gap-3 lg:justify-end">
