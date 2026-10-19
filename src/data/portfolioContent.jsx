@@ -2,75 +2,17 @@ import { Check, MousePointer2, Search } from "lucide-react";
 
 export const navLinks = [
   { label: "Work", to: "/#projects" },
-  { label: "Philosophy", to: "/#philosophy" },
+  { label: "Approach", to: "/#philosophy" },
   { label: "About", to: "/#about" },
   { label: "Contact", to: "/#contact" },
 ];
 
 export const projects = [
-  {
-    slug: "bosch",
-    featured: true,
-    title: "Bosch eBike Systems",
-    eyebrow: "Flagship case study",
-    industry: "eBike mobility ecosystem",
-    problem:
-      "A mature product ecosystem had years of accumulated interface language, but no shared way to evaluate whether that language was clear, accessible, or consistent.",
-    role: "Working Student UX Writing",
-    type: "Enterprise UX writing and content systems",
-    duration: "2024 to present",
-    outcome:
-      "Audited 400+ strings, clarified recurring error-message patterns, contributed terminology alignment, and created an approved UX writing research framework.",
-    metrics: [
-      { value: "400+", label: "strings audited" },
-      { value: "3", label: "product surfaces" },
-      { value: "6", label: "issue categories found" },
-    ],
-    image: "/bosch/thumbnail.webp",
-    imagePosition: "50% 0%",
-    href: "/projects/bosch",
-    tags: ["Enterprise UX", "UX Writing", "Accessibility", "Research"],
-  },
-  {
-    slug: "ersis",
-    title: "ERSIS B2B App Redesign",
-    eyebrow: "B2B mobile product design",
-    industry: "Automotive aftermarket",
-    problem:
-      "Workshop owners were expected to browse a catalog in an environment where they mostly needed to repeat familiar orders quickly.",
-    role: "UX Designer",
-    type: "Android B2B ordering app",
-    duration: "",
-    outcome:
-      "Reframed the product around reordering, redesigned the flow around recent and frequent items, and helped app order share move from roughly 27% to 32%.",
-    metrics: [
-      { value: "27→32%", label: "app order share" },
-      { value: "15", label: "field interviews" },
-    ],
-    image: "/ersis/ErsisThumbnail.webp",
-    href: "/projects/ersis",
-    tags: ["B2B", "Product Design", "Research", "Mobile"],
-  },
-  {
-    slug: "chenaran",
-    title: "Chenaran Dairy Ordering",
-    eyebrow: "B2B web workflow",
-    industry: "Dairy supply chain",
-    problem:
-      "Restaurants and distributors could submit orders, but unclear quantities, review steps, and confirmation states pushed verification back into calls and messages.",
-    role: "UI/UX Designer",
-    type: "B2B ordering system",
-    duration: "1.5 years",
-    outcome:
-      "Modernized the ordering workflow so product selection, delivery details, review, and confirmation supported confidence instead of manual double-checking.",
-    metrics: [
-      { value: "4-step", label: "review-centered flow" },
-      { value: "3", label: "user groups served" },
-    ],
-    image: "/chenaran/chenaranthumbnail.webp",
-    href: "/projects/chenaran",
-    tags: ["B2B", "Product Design", "Workflow UX", "Handoff"],
-  },
+{ value: "20% → 38%", label: "active app usage" },
+      { value: "+30%", label: "repeat app-based orders" },
+      { value: "−18%", label: "phone orders" },
+{ value: "400+", label: "strings audited" },
+{ value: "4-step", label: "review-centered flow" }
 ];
 
 export const philosophy = [
@@ -187,7 +129,7 @@ export const caseStudies = {
             decision: "Flow context required with every request, so words match the moment of use",
           },
         ],
-        quote: "An error message is not a sentence at the edge of the product. It is part of the recovery flow.",
+        
       },
       {
         label: "Trade-offs",
@@ -216,10 +158,10 @@ export const caseStudies = {
       "UX writing is product design at the sentence level. The most valuable work was not a polished line — it was patterns, audit evidence, and research questions that keep improving decisions after my individual contribution ends. The next step is running the research framework itself: testing comprehension on the highest-friction flows first.",
   },
   ersis: {
-    label: "B2B mobile UX case study",
-    title: "Users were not browsing. They were reordering.",
+    label: "Flagship B2B product design case study",
+    title: "Redesigning a B2B ordering workflow around how mechanics actually work.",
     subtitle:
-      "ERSIS looked like a catalog problem until field research showed the real behavior: workshop owners needed to repeat familiar orders quickly, under pressure.",
+      "Transforming a product-ordering experience from a generic catalog interface into a workflow better aligned with mechanics’ real-world needs.",
     cover: "/ersis/ErsisHero.webp",
     meta: [
       ["Role", "UX Designer"],
@@ -229,19 +171,19 @@ export const caseStudies = {
     ],
     outcome: [
       {
-        value: "27→32%",
-        label: "App order share",
-        detail: "After the reorder-first redesign — framed honestly, alongside wider business factors.",
+        value: "20% → 38%",
+        label: "Active app usage",
+        detail: "Reported outcome; measurement period and definition should be verified before publication.",
       },
       {
-        value: "15",
-        label: "Field interviews",
+        value: "+30%",
+        label: "Repeat app-based orders",
         detail: "Workshop owners and partners, interviewed in their working environment.",
       },
       {
-        value: "Reorder-first",
-        label: "New product direction",
-        detail: "Recent and frequent items replaced the catalog as the default path.",
+        value: "−18%",
+        label: "Phone orders",
+        detail: "Reported outcome; measurement period and attribution should be verified before publication.",
       },
     ],
     narrative: [
@@ -259,7 +201,7 @@ export const caseStudies = {
           "Workshop owners order familiar products between repairs, customers, and invoices. Calling a sales rep was fast because the rep already knew their usual order.",
           "The problem was not how to show more products — it was how to make the digital path as direct as the habit it had to replace.",
         ],
-        quote: "If it takes too long, I just call my sales rep.",
+        
         artifact: {
           title: "Existing app screens",
           label: "Before",
@@ -347,7 +289,7 @@ export const caseStudies = {
         label: "Impact",
         title: "A quiet redesign that fit the workday.",
         body: [
-          "App order share moved from roughly 27% to 32%. I frame that carefully — adoption is influenced by more than interface design. The clearer win was directional: ERSIS now behaves less like a catalog and more like a repeat-order tool for busy workshop users.",
+          "Reported outcomes were a rise in active app usage from 20% to 38%, a 30% increase in repeat app-based orders, and an 18% decrease in phone orders. The measurement period, definitions, and attribution need to be confirmed before publication.",
         ],
       },
     ],
