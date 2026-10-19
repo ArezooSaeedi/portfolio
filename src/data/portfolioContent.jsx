@@ -8,11 +8,72 @@ export const navLinks = [
 ];
 
 export const projects = [
-{ value: "20% → 38%", label: "active app usage" },
+{
+    slug: "ersis",
+    title: "ERSIS B2B App Redesign",
+    eyebrow: "B2B mobile product design",
+    industry: "Automotive aftermarket",
+    problem:
+      "Workshop owners were expected to browse a catalog in an environment where they mostly needed to repeat familiar orders quickly.",
+    role: "UX Designer",
+    type: "Android B2B ordering app",
+    duration: "",
+    outcome:
+      "Reframed the experience around repeat ordering, using vehicle-first identification, VIN scanning, and a frequent-items dashboard to reduce reliance on phone ordering.",
+    metrics: [
+      { value: "20% → 38%", label: "active app usage" },
       { value: "+30%", label: "repeat app-based orders" },
       { value: "−18%", label: "phone orders" },
-{ value: "400+", label: "strings audited" },
-{ value: "4-step", label: "review-centered flow" }
+      { value: "15", label: "field interviews" },
+    ],
+    image: "/ersis/ErsisThumbnail.webp",
+    href: "/projects/ersis",
+    tags: ["B2B", "Product Design", "Research", "Mobile"],
+  },
+{
+    slug: "bosch",
+    featured: true,
+    title: "Bosch eBike Systems",
+    eyebrow: "Flagship case study",
+    industry: "eBike mobility ecosystem",
+    problem:
+      "A mature product ecosystem had years of accumulated interface language, but no shared way to evaluate whether that language was clear, accessible, or consistent.",
+    role: "Working Student UX Writing",
+    type: "Enterprise UX writing and content systems",
+    duration: "2024 to present",
+    outcome:
+      "Audited 400+ strings, clarified recurring error-message patterns, contributed terminology alignment, and created an approved UX writing research framework.",
+    metrics: [
+      { value: "400+", label: "strings audited" },
+      { value: "3", label: "product surfaces" },
+      { value: "6", label: "issue categories found" },
+    ],
+    image: "/bosch/thumbnail.webp",
+    imagePosition: "50% 0%",
+    href: "/projects/bosch",
+    tags: ["Enterprise UX", "UX Writing", "Accessibility", "Research"],
+  },
+{
+    slug: "chenaran",
+    title: "Chenaran Dairy Ordering",
+    eyebrow: "B2B web workflow",
+    industry: "Dairy supply chain",
+    problem:
+      "Restaurants and distributors could submit orders, but unclear quantities, review steps, and confirmation states pushed verification back into calls and messages.",
+    role: "UI/UX Designer",
+    type: "B2B ordering system",
+    duration: "1.5 years",
+    outcome:
+      "Modernized the ordering workflow so product selection, delivery details, review, and confirmation supported confidence instead of manual double-checking.",
+    metrics: [
+      { value: "4-step", label: "review-centered flow" },
+      { value: "3", label: "user groups served" },
+    ],
+    image: "/chenaran/chenaranthumbnail.webp",
+    href: "/projects/chenaran",
+    tags: ["B2B", "Product Design", "Workflow UX", "Handoff"],
+  }
+
 ];
 
 export const philosophy = [
@@ -178,7 +239,7 @@ export const caseStudies = {
       {
         value: "+30%",
         label: "Repeat app-based orders",
-        detail: "Workshop owners and partners, interviewed in their working environment.",
+        detail: "Reported outcome; confirm whether this is relative growth or percentage points before publication.",
       },
       {
         value: "−18%",
