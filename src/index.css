@@ -4,8 +4,8 @@
   --paper: #f5f1e8;
   --ink: #161616;
   --muted: #5f5c55;
-  --accent: #ffcb45;
-  --blue: #265cff;
+  --accent: #ded7f2;
+  --blue: #6353ac;
   --mist: #e8ece4;
   --white: #fffaf0;
   --line: #161616;
@@ -919,4 +919,26 @@ select {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+
+/* Editorial typography and the muted-purple portfolio accent. */
+.section-title,
+.case-chapter h2,
+.contact-band h2,
+.reflection-text {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  text-transform: none;
+}
+
+html { scroll-padding-top: 6rem; }
+
+@media (max-width: 767px) {
+  .section-grid { padding-inline: 1rem; }
+  .hero-note { right: auto; }
+  .project-body { padding: 1.25rem; }
+  .case-chapter { min-width: 0; }
+  .modal-image img { max-width: 100%; }
 }
