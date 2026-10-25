@@ -18,7 +18,7 @@ export const projects = [
       "A mature product ecosystem had years of accumulated interface language, but no shared way to evaluate whether that language was clear, accessible, or consistent.",
     role: "Working Student UX Writing",
     type: "Enterprise UX writing and content systems",
-    duration: "2024 to present",
+    duration: "Sep 2024–Aug 2026",
     outcome:
       "Audited 400+ strings, clarified recurring error-message patterns, contributed terminology alignment, and created an approved UX writing research framework.",
     metrics: [
