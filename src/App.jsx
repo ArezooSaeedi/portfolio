@@ -303,7 +303,7 @@ function Hero() {
       <div className="col-span-full grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
         <div className="pb-8">
           <Reveal immediate>
-            <p className="label">Product Designer / UX Designer, Germany</p>
+            <p className="label">UX Designer / Researcher · Germany</p>
           </Reveal>
           <m.h1
             className="mt-6 max-w-5xl text-[clamp(3rem,8vw,7rem)] font-extrabold uppercase leading-[0.92]"
@@ -315,9 +315,10 @@ function Hero() {
           </m.h1>
           <Reveal delay={STAGGER} immediate>
             <p className="mt-7 max-w-2xl text-xl leading-8 text-[var(--muted)]">
-              UX Writing at Bosch eBike Systems, trained in psychology. I specialize in
-              enterprise UX, UX writing, and accessibility — the details that decide whether
-              people trust a workflow.
+              I’m a UX Designer / Researcher for laboratory products, with a background in
+              psychology. My previous work spans B2B ordering and UX writing. I use research
+              and product context to decide what to change, what to preserve, and what we
+              still need to learn.
             </p>
           </Reveal>
           <Reveal delay={STAGGER * 2} immediate className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
@@ -341,8 +342,8 @@ function Hero() {
               fetchPriority="high"
             />
             <div className="hero-note">
-              <span>Availability</span>
-              <strong>Open to Product Designer / UX roles in Germany</strong>
+              <span>Current focus</span>
+              <strong>UX design and research for laboratory products</strong>
             </div>
           </div>
         </Reveal>
@@ -361,10 +362,10 @@ function Hero() {
 
 function RecruiterBar() {
   const items = [
-    ["Experience", "4+ years across UX, UI, research, and writing"],
+    ["Current role", "UX Designer / Researcher, Laboratory Products"],
     ["Education", "M.Sc. HCI in progress, B.Sc. Psychology"],
     ["Strength", "B2B systems, content clarity, accessibility"],
-    ["Availability", "Open to Product Designer / UX Designer roles in Germany"],
+    ["Previous role", "Bosch eBike Systems · Sep 2024–Aug 2026"],
   ];
 
   return (
@@ -521,7 +522,7 @@ function About() {
             I studied psychology before UX, so I design for the moments where people hesitate — expectation, trust, and the small signals that tell a user whether a product understood them.
           </p>
           <p>
-            Day to day at Bosch eBike Systems (alongside an M.Sc. in Human-Computer Interaction), that looks like practical collaboration: writing states and edge cases down before handoff, checking copy and design against implementation constraints, and treating engineers as design partners rather than a delivery step. I would rather adjust a design so it ships coherently than defend a mockup.
+            I now work as a UX Designer / Researcher for laboratory products. In earlier projects, I worked across research, interaction design, and UX writing, including the practical details that shape handoff: states, edge cases, terminology, and implementation constraints.
           </p>
           <p>
             I am drawn to B2B workflows — confirmation screens, ordering systems, error messages — because that is where a product proves it respects the user's time. My case studies share one habit: change direction when the evidence says so, and leave things alone when a rewrite would cost more than it clarifies.
@@ -546,7 +547,7 @@ function Contact() {
             <p className="label label-on-dark">Contact</p>
             <h2>Tell me about your product.</h2>
             <p>
-              I am open to Product Designer and UX Designer roles in Germany. One sentence about your team and the workflow your users struggle with is enough to start — I will come back with questions, not a portfolio dump.
+              Tell me about a task people need to complete, what is getting in their way, and what your team already knows. I’m always glad to talk about research and product design.
             </p>
           </div>
           <div className="flex flex-wrap gap-3 lg:justify-end">
